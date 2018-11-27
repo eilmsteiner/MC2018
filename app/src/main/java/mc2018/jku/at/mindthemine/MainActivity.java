@@ -24,7 +24,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 public class MainActivity extends AppCompatActivity {
-
+// test
     static final int DIM = 6;
     static final int MARGIN = 5;
 
