@@ -29,26 +29,26 @@ class Board {
         boolean hasMine;
         Random r = new Random();
         r.setSeed(System.currentTimeMillis());
-        for(int i = 0; i<rowCount; i++) {
-            for(int j = 0; j<colCount; j++) {
+        for (int i = 0; i < rowCount; i++) {
+            for (int j = 0; j < colCount; j++) {
                 hasMine = (r.nextGaussian() > ratio);
                 board[i][j] = new Cell(i, j, hasMine);
             }
         }
 
         int surroundingMineCount;
-        for(int i = 0; i<rowCount; i++) {
-            for(int j = 0; j<colCount; j++) {
-                if(!board[i][j].hasMine()) {
+        for (int i = 0; i < rowCount; i++) {
+            for (int j = 0; j < colCount; j++) {
+                if (!board[i][j].hasMine()) {
                     surroundingMineCount = 0;
 
                     // check surrounding fields
-                    for(int m = -1; m <= 1; m++) {
-                        for(int n = -1; n <= 1; n++) {
-                            if(m != 0 || n != 0) { // ignore same cell
-                                if(			i+m >= 0 && i+m < rowCount
-                                        && 	j+n >= 0 && j+n < colCount) {
-                                    if(board[i+m][j+n].hasMine()) surroundingMineCount++;
+                    for (int m = -1; m <= 1; m++) {
+                        for (int n = -1; n <= 1; n++) {
+                            if (m != 0 || n != 0) { // ignore same cell
+                                if (i + m >= 0 && i + m < rowCount
+                                        && j + n >= 0 && j + n < colCount) {
+                                    if (board[i + m][j + n].hasMine()) surroundingMineCount++;
                                 }
                             }
                         }
@@ -63,30 +63,30 @@ class Board {
     }
 
     Cell revealCell(int row, int col) {
-        if(col < 0 || col >= colCount || row < 0 || row >= rowCount) return null;
+        if (col < 0 || col >= colCount || row < 0 || row >= rowCount) return null;
 
         Cell cell = board[row][col];
 
         // news.addLast(cell.toString());
 
-        if(cell.hasFlag()) {
+        if (cell.hasFlag()) {
             return cell;
         }
 
-        if(cell.isOpen()) {
+        if (cell.isOpen()) {
             return cell;
         }
 
         cell.reveal();
 
-        if(cell.hasMine()) {
+        if (cell.hasMine()) {
             isRunning = false; // game over
-        }else{
-            if(cell.getSurroundingMines() == 0) {
-                for(int i=-1; i<=1; i++) {
-                    for(int j=-1; j<=1; j++) {
-                        if(i != 0 || j != 0)
-                            this.revealCell(row+i, col+j);
+        } else {
+            if (cell.getSurroundingMines() == 0) {
+                for (int i = -1; i <= 1; i++) {
+                    for (int j = -1; j <= 1; j++) {
+                        if (i != 0 || j != 0)
+                            this.revealCell(row + i, col + j);
                     }
                 }
             }
@@ -99,7 +99,7 @@ class Board {
         return cell;
     }
 
-    Cell flagField(int row, int col){
+    Cell flagField(int row, int col) {
         board[row][col].changeFlagged();
 
         setActive(row, col);
@@ -109,84 +109,92 @@ class Board {
         return board[row][col];
     }
 
-    private void checkBoardState(){
+    private void checkBoardState() {
         boolean winning = true;
-        for(Cell[] row : board){
-            for(Cell c : row){
-                if(c.isOpen()) {
-                    if(c.hasMine()) {
+        for (Cell[] row : board) {
+            for (Cell c : row) {
+                if (c.isOpen()) {
+                    if (c.hasMine()) {
                         winning = false;
                     } // if field is no mine and is open then good!
-                }else{
-                    if(c.hasMine()){
-                        if(!c.hasFlag()) {
+                } else {
+                    if (c.hasMine()) {
+                        if (!c.hasFlag()) {
                             winning = false;
                         } // if mine has flag then yay!
-                    }else{
+                    } else {
                         winning = false;
                     }
                 }
             }
         }
         this.isWon = winning;
-        if(this.isWon) this.isRunning = false;
+        if (this.isWon) this.isRunning = false;
     }
 
-    Cell[] getMines(){
+    Cell[] getMines() {
         ArrayList<Cell> mines = new ArrayList<>();
 
-        for(Cell[] row : board){
-           for(Cell cell : row){
-               if(cell.hasMine() && !cell.isOpen())
-                   mines.add(cell);
-           }
+        for (Cell[] row : board) {
+            for (Cell cell : row) {
+                if (cell.hasMine() && !cell.isOpen())
+                    mines.add(cell);
+            }
         }
 
         return mines.toArray(new Cell[0]);
     }
 
-    boolean isNotRunning() { return !this.isRunning; }
+    boolean isNotRunning() {
+        return !this.isRunning;
+    }
 
-    boolean isWon() { return this.isWon; }
+    boolean isWon() {
+        return this.isWon;
+    }
 
-    public Cell[][] getBoard(){ return this.board; }
+    public Cell[][] getBoard() {
+        return this.board;
+    }
 
-    Cell getCell(int row, int col) { return this.board[row][col]; }
+    Cell getCell(int row, int col) {
+        return this.board[row][col];
+    }
 
     String getNews() {
-        if(news.isEmpty()) return null;
+        if (news.isEmpty()) return null;
         return news.remove();
     }
 
-    private void setRandomCellActive(){
+    private void setRandomCellActive() {
         ArrayList<Cell> blanks = new ArrayList<>();
-        for(Cell[] row : board){
-            for(Cell c : row) {
+        for (Cell[] row : board) {
+            for (Cell c : row) {
                 if (c.getSurroundingMines() == 0 && !c.hasMine())
                     blanks.add(c);
             }
         }
 
-        Cell c = blanks.get((int) (Math.random()*blanks.size()));
+        Cell c = blanks.get((int) (Math.random() * blanks.size()));
         c.setActive(true);
     }
 
-    void setActive(int rowCoord, int colCoord){
-        for(Cell[] row : board){
-            for(Cell c : row){
-                if(c.getRowCoord() == rowCoord && c.getColCoord() == colCoord) {
+    void setActive(int rowCoord, int colCoord) {
+        for (Cell[] row : board) {
+            for (Cell c : row) {
+                if (c.getRowCoord() == rowCoord && c.getColCoord() == colCoord) {
                     c.setActive(true);
-                }else{
+                } else {
                     c.setActive(false);
                 }
             }
         }
     }
 
-    Cell getActive(){
-        for(Cell[] row : board){
-            for(Cell c : row){
-                if(c.isActive())
+    Cell getActive() {
+        for (Cell[] row : board) {
+            for (Cell c : row) {
+                if (c.isActive())
                     return c;
             }
         }
@@ -212,9 +220,9 @@ class Board {
 
         return sb.toString();
     }*/
-    int getRemainingCells(){
+    int getRemainingCells() {
         int count = 0;
-        for(Cell[] row : board) for(Cell c : row) if(!c.isOpen() && !c.hasFlag()) count++;
+        for (Cell[] row : board) for (Cell c : row) if (!c.isOpen() && !c.hasFlag()) count++;
         return count;
     }
 }
