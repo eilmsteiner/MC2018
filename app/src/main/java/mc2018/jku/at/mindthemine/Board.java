@@ -212,4 +212,9 @@ class Board {
 
         return sb.toString();
     }*/
+    int getRemainingCells(){
+        int count = 0;
+        for(Cell[] row : board) for(Cell c : row) if(!c.isOpen() && !c.hasFlag()) count++;
+        return count;
+    }
 }

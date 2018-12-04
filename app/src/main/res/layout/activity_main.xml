@@ -17,12 +17,12 @@
 
     <android.support.constraint.ConstraintLayout
         android:layout_width="match_parent"
-        android:layout_height="wrap_content">
+        android:layout_height="66dp">
 
         <ImageButton
             android:id="@+id/flagButton"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
+            android:layout_width="70dp"
+            android:layout_height="70dp"
             android:contentDescription="@string/icon"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintLeft_toLeftOf="parent"
@@ -32,14 +32,32 @@
 
         <ImageButton
             android:id="@+id/revealButton"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
+            android:layout_width="70dp"
+            android:layout_height="70dp"
             android:contentDescription="@string/icon"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintLeft_toRightOf="@+id/flagButton"
             app:layout_constraintRight_toRightOf="parent"
             app:layout_constraintTop_toTopOf="parent"
             app:srcCompat="@drawable/ic_reveal_button" />
+
+        <TextView
+            android:id="@+id/remaingCounter"
+            android:layout_width="80dp"
+            android:layout_height="58dp"
+            android:layout_marginStart="8dp"
+            android:layout_marginEnd="8dp"
+            android:background="@color/counter_bg"
+            android:fontFamily="@font/digital_readout_heavy"
+            android:gravity="center"
+            android:text="29"
+            android:textAlignment="center"
+            android:textColor="@android:color/holo_red_dark"
+            android:textSize="55sp"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toStartOf="@+id/revealButton"
+            app:layout_constraintStart_toEndOf="@+id/flagButton"
+            app:layout_constraintTop_toTopOf="parent" />
     </android.support.constraint.ConstraintLayout>
 
     <Button
@@ -48,4 +66,6 @@
         android:layout_height="40dp"
         android:text="@string/restart"
         android:visibility="gone" />
+
+
 </LinearLayout>
