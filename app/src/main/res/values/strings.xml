@@ -15,5 +15,7 @@
     <string name="txtAgeInit">0</string>
     <string name="lblMeter">meters</string>
     <string name="lblAcc">Accuracy:</string>
-    <string name="lblAccInitVal">Last location update:    0 seconds ago</string>
+    <string name="lblAccInitValAgo">seconds ago.</string>
+    <string name="lblAccInitValLast">Last location update:</string>
+    <string name="lblAccInitVal">" "</string>
 </resources>

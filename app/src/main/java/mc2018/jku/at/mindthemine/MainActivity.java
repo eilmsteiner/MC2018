@@ -94,7 +94,7 @@ public class MainActivity extends AppCompatActivity {
 
                 if (s % 5 == 0)
                     timeShow += 5;
-                cmTimer.setText(String.format("Last location update:  < %3d seconds ago", timeShow + 5));
+                cmTimer.setText(String.format("< %3d", timeShow));
             }
         });
 
