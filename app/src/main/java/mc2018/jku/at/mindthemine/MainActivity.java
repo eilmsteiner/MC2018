@@ -55,6 +55,7 @@ public class MainActivity extends AppCompatActivity {
 
     private TextView remainingCounter;
 
+
     private LocationManager mLocationManager_gps;
     private LocationManager mLocationManager_net;
     private static int LOCATION_REFRESH_DISTANCE = 2000;
@@ -68,17 +69,20 @@ public class MainActivity extends AppCompatActivity {
     private Button btnIndicator;
     private int timeShow;
 
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+
 
         // initialize the whole location stuff
 
         mLocationManager_gps = (LocationManager) getSystemService(LOCATION_SERVICE);
         mLocationManager_net = (LocationManager) getSystemService(LOCATION_SERVICE);
 
-        while (!checkLocationPermission()) ;
+        while (!checkLocationPermission()) {
+        }
 
         mLocationManager_gps.requestLocationUpdates(provider_gps, LOCATION_REFRESH_TIME,
                 LOCATION_REFRESH_DISTANCE, mLocationListener);
@@ -86,7 +90,7 @@ public class MainActivity extends AppCompatActivity {
                 LOCATION_REFRESH_DISTANCE, mLocationListener);
 
         cmTimer = findViewById(R.id.txtAge);
-        cmTimer.setText("Last location update:    0 seconds ago");
+        cmTimer.setText(R.string.lblAccInitVal);
 
         txtAcc = findViewById(R.id.txtAcc);
         btnIndicator = findViewById(R.id.btnIndicator);
@@ -99,9 +103,9 @@ public class MainActivity extends AppCompatActivity {
                 int m = (int) (time - h * 3600000) / 60000;
                 int s = (int) (time - h * 3600000 - m * 60000) / 1000;
 
-                if(s%5 == 0)
-                    timeShow+=5;
-                cmTimer.setText(String.format("Last location update:  < %3d seconds ago", timeShow+5));
+                if (s % 5 == 0)
+                    timeShow += 5;
+                cmTimer.setText(String.format("Last location update:  < %3d seconds ago", timeShow + 5));
             }
         });
 
@@ -204,7 +208,7 @@ public class MainActivity extends AppCompatActivity {
                     }
 
                     setActive();
-                    remainingCounter.setText(String.format("%s",board.getRemainingCells()));
+                    remainingCounter.setText(String.format("%s", board.getRemainingCells()));
 
                 }
             });
@@ -226,7 +230,7 @@ public class MainActivity extends AppCompatActivity {
                     }
 
                     setActive();
-                    remainingCounter.setText(String.format("%s",board.getRemainingCells()));
+                    remainingCounter.setText(String.format("%s", board.getRemainingCells()));
                 }
             });
 
@@ -247,7 +251,7 @@ public class MainActivity extends AppCompatActivity {
 
                     //Toast.makeText(getBaseContext(), "New game started!", Toast.LENGTH_SHORT).show();
                     findViewById(R.id.restartButton).setVisibility(View.GONE);
-                    remainingCounter.setText(String.format("%s",board.getRemainingCells()));
+                    remainingCounter.setText(String.format("%s", board.getRemainingCells()));
                 }
             });
 
@@ -255,9 +259,10 @@ public class MainActivity extends AppCompatActivity {
         }
 
         setActive();
-        remainingCounter.setText(String.format("%s",board.getRemainingCells()));
+        remainingCounter.setText(String.format("%s", board.getRemainingCells()));
         //Toast.makeText(getBaseContext(), "DONE", Toast.LENGTH_SHORT).show();
     }
+
 
     @Override
     protected void onResume() {
@@ -292,6 +297,8 @@ public class MainActivity extends AppCompatActivity {
             mLocationManager_gps.requestLocationUpdates(provider_net, 400, 1, mLocationListener);
         }
     }
+
+
 
     private int convertToDp(int pixelValue) {
         float scale = getResources().getDisplayMetrics().density;
@@ -336,10 +343,10 @@ public class MainActivity extends AppCompatActivity {
         if (win)
             vibrationPattern = new long[]{
                     0, 100,
-                    500,100,
-                    500,100,
-                    500,100,
-                    500,100
+                    500, 100,
+                    500, 100,
+                    500, 100,
+                    500, 100
             };
         else
             vibrationPattern = new long[]{
@@ -434,7 +441,7 @@ public class MainActivity extends AppCompatActivity {
 
             cmTimer.setBase(SystemClock.elapsedRealtime());
             cmTimer.start();
-            cmTimer.setText("Last location update:     0 seconds ago");
+            cmTimer.setText(R.string.lblAccInitVal);
             timeShow = 0;
 
 
@@ -455,12 +462,12 @@ public class MainActivity extends AppCompatActivity {
     };
 
     private void updateIndicator(Button btnIndicator, float acc) {
-        if(acc > 10)
-            btnIndicator.setBackgroundColor(getResources().getColor(android.R.color.holo_red_dark,this.getTheme()));
+        if (acc > 10)
+            btnIndicator.setBackgroundColor(getResources().getColor(android.R.color.holo_red_dark, this.getTheme()));
         else if (acc > 5)
-            btnIndicator.setBackgroundColor(getResources().getColor(android.R.color.holo_orange_light,this.getTheme()));
+            btnIndicator.setBackgroundColor(getResources().getColor(android.R.color.holo_orange_light, this.getTheme()));
         else
-            btnIndicator.setBackgroundColor(getResources().getColor(android.R.color.holo_green_light,this.getTheme()));
+            btnIndicator.setBackgroundColor(getResources().getColor(android.R.color.holo_green_light, this.getTheme()));
 
 //          for testing during development
 //        if (acc > 30)
@@ -547,8 +554,7 @@ public class MainActivity extends AppCompatActivity {
     }
 
     @Override
-    public void onRequestPermissionsResult(int requestCode,
-                                           String permissions[], int[] grantResults) {
+    public void onRequestPermissionsResult(int requestCode, String permissions[], int[] grantResults) {
         switch (requestCode) {
             case MY_PERMISSIONS_REQUEST_LOCATION_FINE: {
                 // If request is cancelled, the result arrays are empty.
@@ -569,7 +575,7 @@ public class MainActivity extends AppCompatActivity {
 
                     // permission denied, boo! Disable the
                     // functionality that depends on this permission.
-
+                    Toast.makeText(getBaseContext(), "Location permission denied. \nNeed location permissions for the game.", Toast.LENGTH_SHORT).show();
                 }
                 return;
             }
@@ -592,11 +598,11 @@ public class MainActivity extends AppCompatActivity {
 
                     // permission denied, boo! Disable the
                     // functionality that depends on this permission.
-
+                    Toast.makeText(getBaseContext(), "Location permission denied. \nNeed location permissions for the game.", Toast.LENGTH_SHORT).show();
                 }
-                return;
             }
 
         }
     }
+
 }
