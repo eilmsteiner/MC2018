@@ -146,7 +146,7 @@ public class MainActivity extends AppCompatActivity {
                     }
 
                     setActive();
-                    remainingCounter.setText("" + board.getRemainingCells());
+                    remainingCounter.setText(String.format("%s",board.getRemainingCells()));
 
                 }
             });
@@ -168,7 +168,7 @@ public class MainActivity extends AppCompatActivity {
                     }
 
                     setActive();
-                    remainingCounter.setText("" + board.getRemainingCells());
+                    remainingCounter.setText(String.format("%s",board.getRemainingCells()));
                 }
             });
 
@@ -189,7 +189,7 @@ public class MainActivity extends AppCompatActivity {
 
                     //Toast.makeText(getBaseContext(), "New game started!", Toast.LENGTH_SHORT).show();
                     findViewById(R.id.restartButton).setVisibility(View.GONE);
-                    remainingCounter.setText("" + board.getRemainingCells());
+                    remainingCounter.setText(String.format("%s",board.getRemainingCells()));
                 }
             });
 
@@ -197,7 +197,7 @@ public class MainActivity extends AppCompatActivity {
         }
 
         setActive();
-        remainingCounter.setText("" + board.getRemainingCells());
+        remainingCounter.setText(String.format("%s",board.getRemainingCells()));
         //Toast.makeText(getBaseContext(), "DONE", Toast.LENGTH_SHORT).show();
     }
 
