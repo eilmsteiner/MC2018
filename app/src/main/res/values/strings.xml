@@ -18,4 +18,5 @@
     <string name="lblAccInitValAgo">seconds ago.</string>
     <string name="lblAccInitValLast">Last location update:</string>
     <string name="lblAccInitVal">" "</string>
+    <string name="distance">Distance:</string>
 </resources>

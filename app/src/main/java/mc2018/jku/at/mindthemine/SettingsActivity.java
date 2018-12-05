@@ -14,6 +14,7 @@ public class SettingsActivity extends AppCompatActivity {
 
     Settings settings;
     Spinner difficulty;
+    Spinner distance;
     Switch vibration;
 
     @Override
@@ -23,12 +24,19 @@ public class SettingsActivity extends AppCompatActivity {
 
         settings = new Settings(this);
 
+        String[] distances = new String[]{"10m", "100m", "250m"};
+
+        distance = findViewById(R.id.spnDistance);
+        ArrayAdapter<String> adapter = new ArrayAdapter<>(this, android.R.layout.simple_spinner_item, distances);
+        adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+        distance.setAdapter(adapter);
+
         String[] difficulties = new String[]{"Easy", "Medium", "Hard"};
 
         difficulty = findViewById(R.id.spnDifficulty);
-        ArrayAdapter<String> adapter = new ArrayAdapter<>(this, android.R.layout.simple_spinner_item, difficulties);
-        adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
-        difficulty.setAdapter(adapter);
+        ArrayAdapter<String> adapter2 = new ArrayAdapter<>(this, android.R.layout.simple_spinner_item, difficulties);
+        adapter2.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+        difficulty.setAdapter(adapter2);
         int position = -1;
         for (int i = 0; i < difficulties.length; i++){
             if (difficulties[i].equals(settings.getDifficulty())) {

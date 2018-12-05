@@ -72,12 +72,12 @@ class Settings {
 
             this.difficulty = difficultyBuilder.toString();
 
-            show("Elements found: "+difficulty+", "+vibrationEnabled);
+            //show("Elements found: "+difficulty+", "+vibrationEnabled);
         } catch(IOException ioe) {
             //show("File could not be read.\n"+ioe.getMessage());
             // maybe no such file exists
             if(!(new File(filePath)).exists()) {
-                show("No such file found.");
+                //show("No such file found.");
                 saveSettings(); // create the file and save the standard settings
                 loadSettings();
             }
@@ -100,7 +100,7 @@ class Settings {
             osw.flush();
             osw.close();
 
-            show("Elements written: "+difficulty+", "+vibrationEnabled);
+            //show("Elements written: "+difficulty+", "+vibrationEnabled);
         } catch (IOException ioe) {
             show("Could not write file.\n"+ioe.getMessage());
         }

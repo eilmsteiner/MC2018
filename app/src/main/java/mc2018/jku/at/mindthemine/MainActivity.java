@@ -309,7 +309,7 @@ public class MainActivity extends AppCompatActivity {
                 Toast.makeText(getBaseContext(), "YOU WON!", Toast.LENGTH_LONG).show();
                 vibrate(true);
             } else {
-                for (Cell mine : board.getMines()) mine.reveal();
+                for (Cell mine : board.getMines()) if(!mine.hasFlag()) mine.reveal();
 
                 Cell c = board.getActive();
                 cells[c.getRowCoord()][c.getColCoord()].setImageResource(R.drawable.ic_explosion);
@@ -369,46 +369,78 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private int getCellDrawable(Cell c) {
-        if (c.isActive()) return R.drawable.ic_player_c;
-        if (c.hasFlag()) return R.drawable.ic_flag;
-        if (!c.isOpen()) return R.drawable.ic_action_name;
-        if (c.hasMine()) return R.drawable.ic_mine;
-        return R.drawable.ic_action_name;
+        if (c.isOpen()) {
+            if (c.hasMine()) {
+                if(c.isActive())
+                    return R.drawable.ic_explosion;
+                else
+                    return R.drawable.ic_mine;
+            } else {
+                if(c.isActive()){
+                    switch (c.getSurroundingMines()) {
+                        case 1:
+                            return R.drawable.ic_1_player;
+                        case 2:
+                            return R.drawable.ic_2_player;
+                        case 3:
+                            return R.drawable.ic_3_player;
+                        case 4:
+                            return R.drawable.ic_4_player;
+                        case 5:
+                            return R.drawable.ic_5_player;
+                        case 6:
+                            return R.drawable.ic_6_player;
+                        case 7:
+                            return R.drawable.ic_7_player;
+                        case 8:
+                            return R.drawable.ic_8_player;
+                        default:
+                            return R.drawable.ic_player_c;
+                    }
+                }else {
+                    switch (c.getSurroundingMines()) {
+                        case 1:
+                            return R.drawable.ic_1;
+                        case 2:
+                            return R.drawable.ic_2;
+                        case 3:
+                            return R.drawable.ic_3;
+                        case 4:
+                            return R.drawable.ic_4;
+                        case 5:
+                            return R.drawable.ic_5;
+                        case 6:
+                            return R.drawable.ic_6;
+                        case 7:
+                            return R.drawable.ic_7;
+                        case 8:
+                            return R.drawable.ic_8;
+                        default:
+                            return R.drawable.ic_blank;
+                    }
+                }
+            }
+        } else {
+            if (c.hasFlag()) {
+                if(c.isActive())
+                    return R.drawable.ic_flag_player;
+                else
+                    return R.drawable.ic_flag;
+            } else {
+                if(c.isActive())
+                    return R.drawable.ic_player_c;
+                else
+                    return R.drawable.ic_blank;
+            }
+        }
     }
 
     private int getCellColor(Cell c) {
         int iconColor;
         if (c.isOpen()) {
-            if (c.hasMine()) {
-                iconColor = Color.BLACK;
-            } else {
-                switch (c.getSurroundingMines()) {
-                    case 0:
-                        iconColor = Color.WHITE;
-                        break;
-                    case 1:
-                        iconColor = Color.BLUE;
-                        break;
-                    case 2:
-                        iconColor = Color.GREEN;
-                        break;
-                    case 3:
-                        iconColor = Color.YELLOW;
-                        break;
-                    case 4:
-                        iconColor = Color.MAGENTA;
-                        break;
-                    default:
-                        iconColor = Color.RED;
-                        break;
-                }
-            }
+            iconColor = Color.WHITE;
         } else {
-            if (c.hasFlag()) {
-                iconColor = Color.DKGRAY;
-            } else {
-                iconColor = Color.LTGRAY;
-            }
+            iconColor = Color.LTGRAY;
         }
 
         return iconColor;
@@ -450,13 +482,14 @@ public class MainActivity extends AppCompatActivity {
     };
 
     private void updateIndicator(Button btnIndicator, float acc) {
-        if (acc > 10)
-            btnIndicator.setBackgroundColor(getResources().getColor(android.R.color.holo_red_dark, this.getTheme()));
-        else if (acc > 5)
-            btnIndicator.setBackgroundColor(getResources().getColor(android.R.color.holo_orange_light, this.getTheme()));
-        else
-            btnIndicator.setBackgroundColor(getResources().getColor(android.R.color.holo_green_light, this.getTheme()));
-
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+            if (acc > 10)
+                btnIndicator.setBackgroundColor(getResources().getColor(android.R.color.holo_red_dark, this.getTheme()));
+            else if (acc > 5)
+                btnIndicator.setBackgroundColor(getResources().getColor(android.R.color.holo_orange_light, this.getTheme()));
+            else
+                btnIndicator.setBackgroundColor(getResources().getColor(android.R.color.holo_green_light, this.getTheme()));
+        }
 //          for testing during development
 //        if (acc > 30)
 //            btnIndicator.setBackgroundColor(getResources().getColor(android.R.color.holo_red_dark, this.getTheme()));
