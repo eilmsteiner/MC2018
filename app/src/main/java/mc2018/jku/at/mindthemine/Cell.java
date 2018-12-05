@@ -25,6 +25,7 @@ public class Cell {
 
     boolean hasMine() { return this.hasMine; }
     boolean hasFlag() { return this.hasFlag; }
+    boolean isBlank() { return (getSurroundingMines() == 0 && !hasMine()); }
     void changeFlagged() { this.hasFlag = !this.hasFlag; }
 
     boolean isActive() { return this.isActive; }

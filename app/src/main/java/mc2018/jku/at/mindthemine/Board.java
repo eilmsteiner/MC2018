@@ -26,38 +26,41 @@ class Board {
 
         double ratio = 0.95;
 
-        boolean hasMine;
-        Random r = new Random();
-        r.setSeed(System.currentTimeMillis());
-        for (int i = 0; i < rowCount; i++) {
-            for (int j = 0; j < colCount; j++) {
-                hasMine = (r.nextGaussian() > ratio);
-                board[i][j] = new Cell(i, j, hasMine);
+        do {
+            boolean hasMine;
+            Random r = new Random();
+            r.setSeed(System.currentTimeMillis());
+            for (int i = 0; i < rowCount; i++) {
+                for (int j = 0; j < colCount; j++) {
+                    hasMine = (r.nextGaussian() > ratio);
+                    board[i][j] = new Cell(i, j, hasMine);
+                }
             }
-        }
 
-        int surroundingMineCount;
-        for (int i = 0; i < rowCount; i++) {
-            for (int j = 0; j < colCount; j++) {
-                if (!board[i][j].hasMine()) {
-                    surroundingMineCount = 0;
+            int surroundingMineCount;
+            for (int i = 0; i < rowCount; i++) {
+                for (int j = 0; j < colCount; j++) {
+                    if (!board[i][j].hasMine()) {
+                        surroundingMineCount = 0;
 
-                    // check surrounding fields
-                    for (int m = -1; m <= 1; m++) {
-                        for (int n = -1; n <= 1; n++) {
-                            if (m != 0 || n != 0) { // ignore same cell
-                                if (i + m >= 0 && i + m < rowCount
-                                        && j + n >= 0 && j + n < colCount) {
-                                    if (board[i + m][j + n].hasMine()) surroundingMineCount++;
+                        // check surrounding fields
+                        for (int m = -1; m <= 1; m++) {
+                            for (int n = -1; n <= 1; n++) {
+                                if (m != 0 || n != 0) { // ignore same cell
+                                    if (i + m >= 0 && i + m < rowCount
+                                            && j + n >= 0 && j + n < colCount) {
+                                        if (board[i + m][j + n].hasMine()) surroundingMineCount++;
+                                    }
                                 }
                             }
                         }
-                    }
 
-                    board[i][j].setSurroundingMines(surroundingMineCount);
+                        board[i][j].setSurroundingMines(surroundingMineCount);
+                    }
                 }
             }
-        }
+
+        }while(!hasBlanks());
 
         setRandomCellActive();
     }
@@ -170,7 +173,7 @@ class Board {
         ArrayList<Cell> blanks = new ArrayList<>();
         for (Cell[] row : board) {
             for (Cell c : row) {
-                if (c.getSurroundingMines() == 0 && !c.hasMine())
+                if (c.isBlank())
                     blanks.add(c);
             }
         }
@@ -224,5 +227,14 @@ class Board {
         int count = 0;
         for (Cell[] row : board) for (Cell c : row) if (!c.isOpen() && !c.hasFlag()) count++;
         return count;
+    }
+
+    private boolean hasBlanks(){
+        for(Cell[] row : board){
+            for(Cell c : row){
+                if(c.isBlank()) return true;
+            }
+        }
+        return false;
     }
 }
