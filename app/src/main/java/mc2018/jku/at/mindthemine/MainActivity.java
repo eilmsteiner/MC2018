@@ -94,7 +94,10 @@ public class MainActivity extends AppCompatActivity {
 
                 if (s % 5 == 0)
                     timeShow += 5;
-                cmTimer.setText(String.format("< %3d", timeShow));
+                if(timeShow == 0)
+                    cmTimer.setText(String.format("< %3d", 5));
+                else
+                    cmTimer.setText(String.format("< %3d", timeShow));
             }
         });
 
