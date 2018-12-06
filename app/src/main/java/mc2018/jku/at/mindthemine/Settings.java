@@ -20,8 +20,10 @@ class Settings {
 
     private String difficulty = "Easy";
     private int vibrationEnabled = 1;
+    private String distance = "10m";
 
     String getDifficulty(){ return difficulty; }
+    String getDistance(){ return distance; }
     boolean isVibrationEnabled() { return vibrationEnabled == 1; }
 
     Settings(Context context){
@@ -40,6 +42,11 @@ class Settings {
         saveSettings();
     }
 
+    void setDistance(String distance){
+        this.distance = distance;
+        saveSettings();
+    }
+
     private void loadSettings(){
         try {
             FileInputStream fIn = context.openFileInput(FILENAME);
@@ -54,25 +61,36 @@ class Settings {
 
             // Transform the chars to a String
             String readString = new String(inputBuffer);
+            show("Read text: "+readString);
 
             StringBuilder difficultyBuilder = new StringBuilder();
+            StringBuilder distanceBuilder = new StringBuilder();
 
-            boolean beforeSeparator = true;
+            int separator = 0;
             for(int i=0; i<len; i++) {
                 if(readString.charAt(i) == ';') {
-                    beforeSeparator = false;
+                    separator++;
                 } else {
-                    if(beforeSeparator){
-                        difficultyBuilder.append(readString.charAt(i));
-                    }else{
-                        vibrationEnabled = readString.charAt(i);
+                    switch(separator){
+                        case 0:
+                            difficultyBuilder.append(readString.charAt(i));
+                            break;
+                        case 1:
+                            vibrationEnabled = readString.charAt(i) - '0';
+                            break;
+                        case 2:
+                            distanceBuilder.append(readString.charAt(i));
+                            break;
+                        default:
+                            break;
                     }
                 }
             }
 
             this.difficulty = difficultyBuilder.toString();
+            this.distance = distanceBuilder.toString();
 
-            //show("Elements found: "+difficulty+", "+vibrationEnabled);
+            show("Elements found: "+difficulty+", "+vibrationEnabled+", "+distance);
         } catch(IOException ioe) {
             //show("File could not be read.\n"+ioe.getMessage());
             // maybe no such file exists
@@ -89,6 +107,8 @@ class Settings {
         writeString.append(this.difficulty);
         writeString.append(";");
         writeString.append(Integer.toString(this.vibrationEnabled));
+        writeString.append(";");
+        writeString.append(this.distance);
         try {
             FileOutputStream fOut = context.openFileOutput(FILENAME, MODE_PRIVATE);
             OutputStreamWriter osw = new OutputStreamWriter(fOut);
@@ -100,9 +120,9 @@ class Settings {
             osw.flush();
             osw.close();
 
-            //show("Elements written: "+difficulty+", "+vibrationEnabled);
+            //show("Elements written: "+difficulty+", "+vibrationEnabled+", "+distance);
         } catch (IOException ioe) {
-            show("Could not write file.\n"+ioe.getMessage());
+            show("Could not save settings.\n"+ioe.getMessage());
         }
     }
 

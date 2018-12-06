@@ -13,7 +13,12 @@ class Board {
 
     private LinkedList<String> news;
 
-    Board(int rows, int cols) {
+    Board(int rows, int cols){
+        this(rows, cols, 0.95);
+    }
+
+    // ratio probability of containing a mine (is 1-alpha like)
+    Board(int rows, int cols, double ratio) {
         news = new LinkedList<>();
 
         colCount = cols;
@@ -23,8 +28,6 @@ class Board {
         isWon = false;
 
         board = new Cell[rowCount][colCount];
-
-        double ratio = 0.95;
 
         do {
             boolean hasMine;

@@ -32,8 +32,11 @@ import android.widget.Toast;
 
 public class MainActivity extends AppCompatActivity {
     // test
-    static final int DIM = 6;
-    static final int MARGIN = 5;
+    int DIM = 6;
+    double PROBABILITY = 6;
+    int MARGIN = 6; // always set one higher than needed
+
+    Settings settings;
 
     Board board;
     ImageView[][] cells;
@@ -106,21 +109,57 @@ public class MainActivity extends AppCompatActivity {
         TableLayout tl = findViewById(R.id.table);
         remainingCounter = findViewById(R.id.remaingCounter);
 
-        int margin = convertToDp(MARGIN);
+        int whole_width, width, margin;
 
-        Display display = getWindowManager().getDefaultDisplay();
-        Point size = new Point();
-        display.getSize(size);
+        settings = new Settings(this);
 
-        int whole_width = size.x - (DIM * 2) * margin;
+        switch(settings.getDifficulty()){
+            case "Easy":
+                DIM = 6;
+                MARGIN = 6;
+                PROBABILITY = 0.95;
+                break;
+            case "Medium":
+                DIM = 8;
+                MARGIN = 6;
+                PROBABILITY = 0.8;
+                break;
+            case "Hard":
+                PROBABILITY = 0.5;
+                MARGIN = 6;
+                DIM = 10;
+                break;
+            case "Impossible":
+                PROBABILITY = 0.2;
+                MARGIN = 2;
+                DIM = 20;
+                break;
+            default:
+                DIM = 2;
+                MARGIN = 6;
+                PROBABILITY = 0.99;
+                break;
+        }
 
-        int width = (int) Math.floor(((double) whole_width) / ((double) DIM));
+        do{
+            MARGIN--;
+
+            margin = convertToDp(MARGIN);
+
+            Display display = getWindowManager().getDefaultDisplay();
+            Point size = new Point();
+            display.getSize(size);
+
+            whole_width = size.x - (DIM * 2) * margin;
+
+            width = (int) Math.floor(((double) whole_width) / ((double) DIM));
+        }while(width <= 2*margin);
 
         cellColor = Color.rgb(127, 78, 35);
 
         cells = new ImageView[DIM][DIM];
 
-        board = new Board(DIM, DIM);
+        board = new Board(DIM, DIM, PROBABILITY);
 
         Cell c = board.getActive();
         chosenCol = c.getColCoord();
@@ -149,6 +188,8 @@ public class MainActivity extends AppCompatActivity {
                 iv.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {
+                        if(board.isNotRunning()) return;
+
                         int id = v.getId();
 
                         int row = id % DIM;
@@ -159,7 +200,7 @@ public class MainActivity extends AppCompatActivity {
 
                         board.setActive(row, col);
 
-                        setActive();
+                        drawBoard();
                     }
                 });
 
@@ -199,7 +240,7 @@ public class MainActivity extends AppCompatActivity {
                         Toast.makeText(getBaseContext(), s, Toast.LENGTH_SHORT).show();
                     }
 
-                    setActive();
+                    drawBoard();
                     remainingCounter.setText(String.format("%s", board.getRemainingCells()));
 
                 }
@@ -221,7 +262,7 @@ public class MainActivity extends AppCompatActivity {
                         Toast.makeText(getBaseContext(), s, Toast.LENGTH_SHORT).show();
                     }
 
-                    setActive();
+                    drawBoard();
                     remainingCounter.setText(String.format("%s", board.getRemainingCells()));
                 }
             });
@@ -239,10 +280,10 @@ public class MainActivity extends AppCompatActivity {
                     chosenCol = c.getColCoord();
                     chosenRow = c.getRowCoord();
 
-                    setActive();
+                    drawBoard();
 
                     //Toast.makeText(getBaseContext(), "New game started!", Toast.LENGTH_SHORT).show();
-                    findViewById(R.id.restartButton).setVisibility(View.GONE);
+                    //findViewById(R.id.restartButton).setVisibility(View.GONE);
                     remainingCounter.setText(String.format("%s", board.getRemainingCells()));
                 }
             });
@@ -250,7 +291,7 @@ public class MainActivity extends AppCompatActivity {
             tl.addView(row, i);
         }
 
-        setActive();
+        drawBoard();
         remainingCounter.setText(String.format("%s", board.getRemainingCells()));
         //Toast.makeText(getBaseContext(), "DONE", Toast.LENGTH_SHORT).show();
     }
@@ -296,7 +337,7 @@ public class MainActivity extends AppCompatActivity {
         return (int) (pixelValue * scale + 0.5f);
     }
 
-    private void setActive() {
+    private void drawBoard() {
         for (int i = 0; i < cells.length; i++) {
             for (int j = 0; j < cells[i].length; j++) {
                 //setting image resource
@@ -304,6 +345,11 @@ public class MainActivity extends AppCompatActivity {
                 cells[j][i].setBackgroundColor(getCellColor(board.getCell(i, j)));
             }
         }
+    }
+
+    private void setWrongFlag(Cell c){
+        cells[c.getRowCoord()][c.getColCoord()].setImageResource(R.drawable.ic_wrong_flag);
+        cells[c.getRowCoord()][c.getColCoord()].setBackgroundColor(Color.LTGRAY);
     }
 
     public void checkBoard() {
@@ -317,19 +363,19 @@ public class MainActivity extends AppCompatActivity {
                 Cell c = board.getActive();
                 cells[c.getRowCoord()][c.getColCoord()].setImageResource(R.drawable.ic_explosion);
 
-                //setActive(DIM, DIM);
+                //drawBoard(DIM, DIM);
 
                 Toast.makeText(getBaseContext(), "GAME OVER", Toast.LENGTH_SHORT).show();
 
                 vibrate(false);
             }
-            findViewById(R.id.restartButton).setVisibility(View.VISIBLE);
-
-
+            //findViewById(R.id.restartButton).setVisibility(View.VISIBLE);
         }
     }
 
     private void vibrate(boolean win) {
+        if(!settings.isVibrationEnabled()) return;
+
         long[] vibrationPattern;
         if (win)
             vibrationPattern = new long[]{
@@ -425,10 +471,14 @@ public class MainActivity extends AppCompatActivity {
             }
         } else {
             if (c.hasFlag()) {
-                if(c.isActive())
+                if (c.isActive()){
                     return R.drawable.ic_flag_player;
-                else
-                    return R.drawable.ic_flag;
+                } else {
+                    if (board.isNotRunning() && !c.hasMine())
+                        return R.drawable.ic_wrong_flag;
+                    else
+                        return R.drawable.ic_flag;
+                }
             } else {
                 if(c.isActive())
                     return R.drawable.ic_player_c;

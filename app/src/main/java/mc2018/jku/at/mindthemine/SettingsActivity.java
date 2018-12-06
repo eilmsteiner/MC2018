@@ -24,26 +24,46 @@ public class SettingsActivity extends AppCompatActivity {
 
         settings = new Settings(this);
 
-        String[] distances = new String[]{"10m", "100m", "250m"};
+        String[] distances = new String[]{"10m", "25m", "50m", "75m", "100m", "125m", "150m", "175m", "200m", "250m"};
 
         distance = findViewById(R.id.spnDistance);
         ArrayAdapter<String> adapter = new ArrayAdapter<>(this, android.R.layout.simple_spinner_item, distances);
         adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
         distance.setAdapter(adapter);
+        int position = -1;
+        for (int i = 0; i < distances.length; i++){
+            if (distances[i].equals(settings.getDistance())) {
+                position = i;
+            }
+        }
+        //Toast.makeText(this, "Position: "+position, Toast.LENGTH_SHORT).show();
+        distance.setSelection(position);
 
-        String[] difficulties = new String[]{"Easy", "Medium", "Hard"};
+        distance.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+            @Override
+            public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
+                settings.setDistance((String) distance.getItemAtPosition(position));
+            }
+
+            @Override
+            public void onNothingSelected(AdapterView<?> parent) {
+                Toast.makeText(getBaseContext(), "HOW DID YOU DO THAT?! (distance)", Toast.LENGTH_SHORT).show();
+            }
+        });
+
+        String[] difficulties = new String[]{"Easy", "Medium", "Hard", "Impossible"};
 
         difficulty = findViewById(R.id.spnDifficulty);
         ArrayAdapter<String> adapter2 = new ArrayAdapter<>(this, android.R.layout.simple_spinner_item, difficulties);
         adapter2.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
         difficulty.setAdapter(adapter2);
-        int position = -1;
+        position = -1;
         for (int i = 0; i < difficulties.length; i++){
             if (difficulties[i].equals(settings.getDifficulty())) {
                 position = i;
             }
         }
-        Toast.makeText(this, "Position: "+position, Toast.LENGTH_SHORT).show();
+        //Toast.makeText(this, "Position: "+position, Toast.LENGTH_SHORT).show();
         difficulty.setSelection(position);
 
         difficulty.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
@@ -54,7 +74,7 @@ public class SettingsActivity extends AppCompatActivity {
 
             @Override
             public void onNothingSelected(AdapterView<?> parent) {
-                Toast.makeText(getBaseContext(), "HOW DID YOU DO THAT?!", Toast.LENGTH_SHORT).show();
+                Toast.makeText(getBaseContext(), "HOW DID YOU DO THAT?! (difficulty)", Toast.LENGTH_SHORT).show();
             }
         });
 
