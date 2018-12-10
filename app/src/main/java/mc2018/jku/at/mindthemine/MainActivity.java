@@ -7,6 +7,10 @@ import android.content.DialogInterface;
 import android.content.pm.PackageManager;
 import android.graphics.Color;
 import android.graphics.Point;
+import android.hardware.Sensor;
+import android.hardware.SensorEvent;
+import android.hardware.SensorEventListener;
+import android.hardware.SensorManager;
 import android.location.Location;
 import android.location.LocationListener;
 import android.location.LocationManager;
@@ -21,6 +25,8 @@ import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 import android.view.Display;
 import android.view.View;
+import android.view.animation.Animation;
+import android.view.animation.RotateAnimation;
 import android.widget.Button;
 import android.widget.Chronometer;
 import android.widget.ImageButton;
@@ -30,7 +36,7 @@ import android.widget.TableRow;
 import android.widget.TextView;
 import android.widget.Toast;
 
-public class MainActivity extends AppCompatActivity {
+public class MainActivity extends AppCompatActivity implements SensorEventListener {
     // test
     int DIM = 6;
     double PROBABILITY = 6;
@@ -63,16 +69,25 @@ public class MainActivity extends AppCompatActivity {
 
     private Location activePosLocation;
 
+    // define the display assembly compass picture
+    private ImageView compassImageView;
+
+    // record the compass picture angle turned
+    private float currentDegree = 0f;
+
+    // device sensor manager
+    private SensorManager mSensorManager;
+
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        // TODO remove for real life usage
-        activePosLocation = new Location("");
-        activePosLocation.setLatitude(48.300992);
-        activePosLocation.setLongitude(14.164031);
+        // _TODO remove for real life usage
+        //activePosLocation.setLatitude(48.300992);
+        //activePosLocation.setLongitude(14.164031);
 
         // initialize the whole location stuff
 
@@ -307,6 +322,13 @@ public class MainActivity extends AppCompatActivity {
         drawBoard();
         remainingCounter.setText(String.format("%s", board.getRemainingCells()));
         //Toast.makeText(getBaseContext(), "DONE", Toast.LENGTH_SHORT).show();
+
+        // our compass image
+        compassImageView = findViewById(R.id.compassImageView);
+
+
+        // initialize your android device sensor capabilities
+        mSensorManager = (SensorManager) getSystemService(SENSOR_SERVICE);
     }
 
 
@@ -325,6 +347,8 @@ public class MainActivity extends AppCompatActivity {
 
             mLocationManager_gps.requestLocationUpdates(provider_net, 400, 1, mLocationListener);
         }
+        mSensorManager.registerListener(this, mSensorManager.getDefaultSensor(Sensor.TYPE_ORIENTATION),
+                SensorManager.SENSOR_DELAY_GAME);
     }
 
     @Override
@@ -342,6 +366,9 @@ public class MainActivity extends AppCompatActivity {
 
             mLocationManager_gps.requestLocationUpdates(provider_net, 400, 1, mLocationListener);
         }
+
+        // to stop the listener and save battery
+        mSensorManager.unregisterListener(this);
     }
 
 
@@ -609,6 +636,11 @@ public class MainActivity extends AppCompatActivity {
             Location pos = new Location("");
             pos.setLatitude(location.getLatitude());
             pos.setLongitude(location.getLongitude());
+            if(activePosLocation == null) {
+                activePosLocation = new Location("");
+                activePosLocation.setLatitude(pos.getLatitude());
+                activePosLocation.setLongitude(pos.getLongitude());
+            }
 
             float acc = location.getAccuracy();
             txtAcc.setText(String.format("%.1f", acc));
@@ -620,8 +652,8 @@ public class MainActivity extends AppCompatActivity {
             cmTimer.setText(R.string.lblAccInitVal);
             timeShow = 0;
 
-            // TODO remove '*10' for real life usage
-            if(acc < settings.getDistance()*10) {
+            // TODO remove multiplicator for real life usage
+            if(acc < settings.getDistance()) {
                 // for testing
 //                Location initLoc = new Location("");
 //
@@ -662,8 +694,8 @@ public class MainActivity extends AppCompatActivity {
 
 
                 // new pos
-                pos.setLatitude(48.300980);
-                pos.setLongitude(14.163950);
+                //pos.setLatitude(48.300980);
+                //pos.setLongitude(14.163950);
 
                 float[] distance = new float[2];
                 Location.distanceBetween(activePosLocation.getLatitude(),activePosLocation.getLongitude(),pos.getLatitude(),pos.getLongitude(),distance);
@@ -910,4 +942,34 @@ public class MainActivity extends AppCompatActivity {
         }
     }
 
+    @Override
+    public void onSensorChanged(SensorEvent event) {
+
+        // get the angle around the z-axis rotated
+        float degree = Math.round(event.values[0]);
+
+        // create a rotation animation (reverse turn degree degrees)
+        RotateAnimation ra = new RotateAnimation(
+                currentDegree,
+                -degree,
+                Animation.RELATIVE_TO_SELF, 0.5f,
+                Animation.RELATIVE_TO_SELF,
+                0.5f);
+
+        // how long the animation will take place
+        ra.setDuration(210);
+
+        // set the animation after the end of the reservation status
+        ra.setFillAfter(true);
+
+        // Start the animation
+        compassImageView.startAnimation(ra);
+        currentDegree = -degree;
+
+    }
+
+    @Override
+    public void onAccuracyChanged(Sensor sensor, int accuracy) {
+
+    }
 }
