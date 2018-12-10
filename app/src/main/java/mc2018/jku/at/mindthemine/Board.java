@@ -17,6 +17,7 @@ class Board {
         this(rows, cols, 0.95);
     }
 
+
     // ratio probability of containing a mine (is 1-alpha like)
     Board(int rows, int cols, double ratio) {
         news = new LinkedList<>();
@@ -239,5 +240,14 @@ class Board {
             }
         }
         return false;
+    }
+
+
+    public int getColCount() {
+        return colCount;
+    }
+
+    public int getRowCount() {
+        return rowCount;
     }
 }

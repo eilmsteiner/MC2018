@@ -61,12 +61,18 @@ public class MainActivity extends AppCompatActivity {
     private Button btnIndicator;
     private int timeShow;
 
+    private Location activePosLocation;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
+        // TODO remove for real life usage
+        activePosLocation = new Location("");
+        activePosLocation.setLatitude(48.300992);
+        activePosLocation.setLongitude(14.164031);
 
         // initialize the whole location stuff
 
@@ -97,7 +103,7 @@ public class MainActivity extends AppCompatActivity {
 
                 if (s % 5 == 0)
                     timeShow += 5;
-                if(timeShow == 0)
+                if (timeShow == 0)
                     cmTimer.setText(String.format("< %3d", 5));
                 else
                     cmTimer.setText(String.format("< %3d", timeShow));
@@ -113,7 +119,7 @@ public class MainActivity extends AppCompatActivity {
 
         settings = new Settings(this);
 
-        switch(settings.getDifficulty()){
+        switch (settings.getDifficulty()) {
             case "Easy":
                 DIM = 6;
                 MARGIN = 6;
@@ -141,7 +147,7 @@ public class MainActivity extends AppCompatActivity {
                 break;
         }
 
-        do{
+        do {
             MARGIN--;
 
             margin = convertToDp(MARGIN);
@@ -153,7 +159,7 @@ public class MainActivity extends AppCompatActivity {
             whole_width = size.x - (DIM * 2) * margin;
 
             width = (int) Math.floor(((double) whole_width) / ((double) DIM));
-        }while(width <= 2*margin);
+        } while (width <= 2 * margin);
 
         cellColor = Color.rgb(127, 78, 35);
 
@@ -164,6 +170,7 @@ public class MainActivity extends AppCompatActivity {
         Cell c = board.getActive();
         chosenCol = c.getColCoord();
         chosenRow = c.getRowCoord();
+        //chosenPosLocation = mLocationListener.
 
         for (int i = 0; i < DIM; i++) {
             TableRow row = new TableRow(this);
@@ -188,19 +195,25 @@ public class MainActivity extends AppCompatActivity {
                 iv.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {
-                        if(board.isNotRunning()) return;
+//                        if(board.isNotRunning()) return;
+//
+//                        int id = v.getId();
+//
+//                        int row = id % DIM;
+//                        int col = id / DIM;
+//
+//                        chosenRow = row;
+//                        chosenCol = col;
+//
+//                        board.setActive(row, col);
+//
+//                        drawBoard();
 
                         int id = v.getId();
 
                         int row = id % DIM;
                         int col = id / DIM;
-
-                        chosenRow = row;
-                        chosenCol = col;
-
-                        board.setActive(row, col);
-
-                        drawBoard();
+                        moveToCell(row, col);
                     }
                 });
 
@@ -332,6 +345,96 @@ public class MainActivity extends AppCompatActivity {
     }
 
 
+    private void moveToCell(int row, int col) {
+        if (board.isNotRunning()) return;
+
+        chosenCol = col;
+        chosenRow = row;
+
+        board.setActive(row, col);
+
+        drawBoard();
+    }
+
+    private void moveToCellDir(String dir) {
+        if (board.isNotRunning()) return;
+
+        int row = 0, col = 0;
+
+//        switch (dir){
+//            case "N":
+//                if(chosenRow > 0)
+//                    row = chosenRow - 1;
+//                else
+//                    row = chosenRow;
+//                col = chosenCol;
+//                break;
+//            case "E":
+//                if(chosenCol < board.getColCount()-1)
+//                    col = chosenCol + 1;
+//                else
+//                    col = chosenCol;
+//                row = chosenRow;
+//                break;
+//            case "S":
+//                if(chosenRow < board.getRowCount()-1)
+//                    row = chosenRow + 1;
+//                else
+//                    row = chosenRow;
+//                col = chosenCol;
+//                break;
+//            case "W":
+//                if(chosenCol > 0)
+//                    col = chosenCol - 1;
+//                else
+//                    col = chosenCol;
+//                row = chosenRow;
+//                break;
+//        }
+        switch (dir){
+            case "N":
+                if(chosenCol > 0)
+                    col = chosenCol - 1;
+                else
+                    col = chosenCol;
+                row = chosenRow;
+                break;
+            case "E":
+                if(chosenRow < board.getRowCount()-1)
+                    row = chosenRow + 1;
+                else
+                    row = chosenRow;
+                col = chosenCol;
+                break;
+            case "S":
+                if(chosenCol < board.getColCount()-1)
+                    col = chosenCol + 1;
+                else
+                    col = chosenCol;
+                row = chosenRow;
+                break;
+            case "W":
+                if(chosenRow > 0)
+                    row = chosenRow - 1;
+                else
+                    row = chosenRow;
+                col = chosenCol;
+                break;
+        }
+
+
+        Log.d("MainActivityLogger", "chosen row/col: " + chosenRow + "/" + chosenCol);
+        Log.d("MainActivityLogger", "new row/col: " + row + "/" + col);
+
+        chosenRow = row;
+        chosenCol = col;
+
+        board.setActive(chosenRow, chosenCol);
+
+        drawBoard();
+    }
+
+
     private int convertToDp(int pixelValue) {
         float scale = getResources().getDisplayMetrics().density;
         return (int) (pixelValue * scale + 0.5f);
@@ -347,7 +450,7 @@ public class MainActivity extends AppCompatActivity {
         }
     }
 
-    private void setWrongFlag(Cell c){
+    private void setWrongFlag(Cell c) {
         cells[c.getRowCoord()][c.getColCoord()].setImageResource(R.drawable.ic_wrong_flag);
         cells[c.getRowCoord()][c.getColCoord()].setBackgroundColor(Color.LTGRAY);
     }
@@ -358,7 +461,7 @@ public class MainActivity extends AppCompatActivity {
                 Toast.makeText(getBaseContext(), "YOU WON!", Toast.LENGTH_LONG).show();
                 vibrate(true);
             } else {
-                for (Cell mine : board.getMines()) if(!mine.hasFlag()) mine.reveal();
+                for (Cell mine : board.getMines()) if (!mine.hasFlag()) mine.reveal();
 
                 Cell c = board.getActive();
                 cells[c.getRowCoord()][c.getColCoord()].setImageResource(R.drawable.ic_explosion);
@@ -374,7 +477,7 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private void vibrate(boolean win) {
-        if(!settings.isVibrationEnabled()) return;
+        if (!settings.isVibrationEnabled()) return;
 
         long[] vibrationPattern;
         if (win)
@@ -420,12 +523,12 @@ public class MainActivity extends AppCompatActivity {
     private int getCellDrawable(Cell c) {
         if (c.isOpen()) {
             if (c.hasMine()) {
-                if(c.isActive())
+                if (c.isActive())
                     return R.drawable.ic_explosion;
                 else
                     return R.drawable.ic_mine;
             } else {
-                if(c.isActive()){
+                if (c.isActive()) {
                     switch (c.getSurroundingMines()) {
                         case 1:
                             return R.drawable.ic_1_player;
@@ -446,7 +549,7 @@ public class MainActivity extends AppCompatActivity {
                         default:
                             return R.drawable.ic_player_c;
                     }
-                }else {
+                } else {
                     switch (c.getSurroundingMines()) {
                         case 1:
                             return R.drawable.ic_1;
@@ -471,7 +574,7 @@ public class MainActivity extends AppCompatActivity {
             }
         } else {
             if (c.hasFlag()) {
-                if (c.isActive()){
+                if (c.isActive()) {
                     return R.drawable.ic_flag_player;
                 } else {
                     if (board.isNotRunning() && !c.hasMine())
@@ -480,7 +583,7 @@ public class MainActivity extends AppCompatActivity {
                         return R.drawable.ic_flag;
                 }
             } else {
-                if(c.isActive())
+                if (c.isActive())
                     return R.drawable.ic_player_c;
                 else
                     return R.drawable.ic_blank;
@@ -517,7 +620,135 @@ public class MainActivity extends AppCompatActivity {
             cmTimer.setText(R.string.lblAccInitVal);
             timeShow = 0;
 
+            // TODO remove '*10' for real life usage
+            if(acc < settings.getDistance()*10) {
+                // for testing
+//                Location initLoc = new Location("");
+//
+//                initLoc.setLatitude(48.300992);
+//                initLoc.setLongitude(14.164031);
 
+
+                // center 48.300995, 14.164029
+                // N 48.301039, 14.164032
+                // S 48.300949, 14.164027
+                // W 48.300995, 14.163958
+                // E 48.300993, 14.164100
+
+                // NW 48.301039, 14.163959
+                // NE 48.301036, 14.164097
+                // SE 48.300950, 14.164097
+                // SW 48.300946, 14.163958
+
+                // inside:
+                // 48.301021, 14.164065 NE ok
+                // 48.301028, 14.164028 N ok
+                // 48.300958, 14.164027 S ok
+                // 48.300960, 14.163977 SW ok
+                //corner:
+                // 48.301033, 14.164087 ok
+                // 48.300954, 14.164090 ok
+                // 48.300954, 14.163971 ok
+                // 48.301031, 14.163970 ok
+
+                // outside:
+                // 48.301047, 14.164074 NNE
+                // 48.300980, 14.163950 WSW
+                // corner
+                // 48.301044, 14.164107 ok
+                // 48.300940, 14.164111 ok
+                // 48.300942, 14.163946 ok
+                // 48.301044, 14.163950 ok
+
+
+                // new pos
+                pos.setLatitude(48.300980);
+                pos.setLongitude(14.163950);
+
+                float[] distance = new float[2];
+                Location.distanceBetween(activePosLocation.getLatitude(),activePosLocation.getLongitude(),pos.getLatitude(),pos.getLongitude(),distance);
+                //Location.distanceBetween(initLoc.getLatitude(), initLoc.getLongitude(), pos.getLatitude(), pos.getLongitude(), distance);
+                float dist = distance[0];
+                float bear = -1;
+                if (distance.length == 2)
+                    bear = distance[1];
+                else if (distance.length == 3)
+                    bear = distance[2];
+
+                int dim = 10;
+                int dir = -1; // -1...inside; 0...N; 1...E; 2...S; 3...W
+                double coeff;
+                double diag = Math.sqrt(dim / 2 * dim / 2 + dim / 2 * dim / 2);
+                if (dist < dim / 2) {
+                    dir = -1;
+                } else if (0 <= bear && bear < 45) {
+                    coeff = (diag - dim / 2) / 45;
+                    if (dist > dim / 2 + (Math.abs(bear) % 45) * coeff) {
+                        dir = 0;
+                    }
+                } else if (45 <= bear && bear < 90) {
+                    if (dist > diag - ((bear - 45) / 45) * ((diag - dim / 2))) {
+                        dir = 1;
+                    }
+                } else if (90 <= bear && bear < 135) {
+                    coeff = (diag - dim / 2) / 45;
+                    if (dist > dim / 2 + (Math.abs(bear) % 45) * coeff) {
+                        dir = 1;
+                    }
+                } else if (135 <= bear && bear < 180) {
+                    if (dist > diag - ((bear - 135) / 45) * ((diag - dim / 2))) {
+                        dir = 2;
+                    }
+                } else if (-180 <= bear && bear < -135) {
+                    if (dist > diag - ((bear * (-1) - 135) / 45) * ((diag - dim / 2))) {
+                        dir = 2;
+                    }
+                } else if (-135 <= bear && bear < -90) {
+                    coeff = (diag - dim / 2) / 45;
+                    if (dist > dim / 2 + (Math.abs(bear) % 45) * coeff) {
+                        dir = 3;
+                    }
+                } else if (-90 <= bear && bear < -45) {
+                    if (dist > diag - ((bear * (-1) - 45) / 45) * ((diag - dim / 2))) {
+                        dir = 3;
+                    }
+                } else if (-45 <= bear && bear < 0) {
+                    coeff = (Math.sqrt(dim / 2 * dim / 2 + dim / 2 * dim / 2) - dim / 2) / 45;
+                    if (dist > dim / 2 + (Math.abs(bear) % 45) * coeff) {
+                        dir = 0;
+                    }
+                }
+
+                switch (dir) {
+                    case -1:
+                        Log.d("MainActivityLogger", "DON'T MOVE " + dist);
+                        break;
+                    case 0:
+                        Log.d("MainActivityLogger", "MOVE NORTH " + dist);
+                        moveToCellDir("N");
+                        activePosLocation = pos;
+                        break;
+                    case 1:
+                        Log.d("MainActivityLogger", "MOVE EAST " + dist);
+                        moveToCellDir("E");
+                        activePosLocation = pos;
+                        break;
+                    case 2:
+                        Log.d("MainActivityLogger", "MOVE SOUTH " + dist);
+                        moveToCellDir("S");
+                        activePosLocation = pos;
+                        break;
+                    case 3:
+                        Log.d("MainActivityLogger", "MOVE WEST " + dist);
+                        moveToCellDir("W");
+                        activePosLocation = pos;
+                        break;
+                }
+
+
+
+            } else
+                Log.d("MainActivityLogger", "accurracy too bad");
         }
 
         @Override

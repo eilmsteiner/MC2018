@@ -30,12 +30,11 @@
         android:id="@+id/spnDistance"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:layout_marginLeft="10dp"
+        android:layout_marginStart="8dp"
         android:layout_marginTop="20dp"
-        android:layout_marginRight="10dp"
-        app:layout_constraintHorizontal_bias="0.473"
-        app:layout_constraintLeft_toRightOf="@+id/txtDifficulty"
-        app:layout_constraintRight_toRightOf="parent"
+        android:layout_marginEnd="8dp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toEndOf="@+id/txtDistance"
         app:layout_constraintTop_toBottomOf="@+id/swtVibration" />
 
     <Switch

@@ -20,10 +20,10 @@ class Settings {
 
     private String difficulty = "Easy";
     private int vibrationEnabled = 1;
-    private String distance = "10m";
+    private int distance = 10;
 
     String getDifficulty(){ return difficulty; }
-    String getDistance(){ return distance; }
+    int getDistance(){ return distance; }
     boolean isVibrationEnabled() { return vibrationEnabled == 1; }
 
     Settings(Context context){
@@ -42,7 +42,7 @@ class Settings {
         saveSettings();
     }
 
-    void setDistance(String distance){
+    void setDistance(int distance){
         this.distance = distance;
         saveSettings();
     }
@@ -79,7 +79,8 @@ class Settings {
                             vibrationEnabled = readString.charAt(i) - '0';
                             break;
                         case 2:
-                            distanceBuilder.append(readString.charAt(i));
+                            if(Character.isDigit(readString.charAt(i)))
+                                distanceBuilder.append(readString.charAt(i));
                             break;
                         default:
                             break;
@@ -88,7 +89,8 @@ class Settings {
             }
 
             this.difficulty = difficultyBuilder.toString();
-            this.distance = distanceBuilder.toString();
+            if(distanceBuilder.toString() != "")
+                this.distance = Integer.parseInt(distanceBuilder.toString());
 
             show("Elements found: "+difficulty+", "+vibrationEnabled+", "+distance);
         } catch(IOException ioe) {

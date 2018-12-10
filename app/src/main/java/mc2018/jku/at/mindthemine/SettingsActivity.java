@@ -24,15 +24,15 @@ public class SettingsActivity extends AppCompatActivity {
 
         settings = new Settings(this);
 
-        String[] distances = new String[]{"10m", "25m", "50m", "75m", "100m", "125m", "150m", "175m", "200m", "250m"};
+        Integer[] distances = new Integer[]{10, 25, 50, 75, 100, 125, 150, 175, 200, 250};
 
         distance = findViewById(R.id.spnDistance);
-        ArrayAdapter<String> adapter = new ArrayAdapter<>(this, android.R.layout.simple_spinner_item, distances);
+        ArrayAdapter<Integer> adapter = new ArrayAdapter<Integer>(this, android.R.layout.simple_spinner_item, distances);
         adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
         distance.setAdapter(adapter);
         int position = -1;
         for (int i = 0; i < distances.length; i++){
-            if (distances[i].equals(settings.getDistance())) {
+            if (distances[i] == settings.getDistance()) {
                 position = i;
             }
         }
@@ -42,7 +42,7 @@ public class SettingsActivity extends AppCompatActivity {
         distance.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override
             public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
-                settings.setDistance((String) distance.getItemAtPosition(position));
+                settings.setDistance((int)distance.getItemAtPosition(position));
             }
 
             @Override
