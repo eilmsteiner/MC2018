@@ -19,4 +19,5 @@
     <string name="lblAccInitValLast">Last location update:</string>
     <string name="lblAccInitVal">" "</string>
     <string name="distance">Distance in m:</string>
+    <string name="space" />
 </resources>

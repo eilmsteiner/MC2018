@@ -25,6 +25,8 @@ import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 import android.view.Display;
 import android.view.View;
+import android.view.Window;
+import android.view.WindowManager;
 import android.view.animation.Animation;
 import android.view.animation.RotateAnimation;
 import android.widget.Button;
@@ -83,14 +85,17 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+
+        //Remove title bar
+        this.requestWindowFeature(Window.FEATURE_NO_TITLE);
+        getSupportActionBar().hide();
+
+        //Remove notification bar
+        this.getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN, WindowManager.LayoutParams.FLAG_FULLSCREEN);
+
         setContentView(R.layout.activity_main);
 
-        // _TODO remove for real life usage
-        //activePosLocation.setLatitude(48.300992);
-        //activePosLocation.setLongitude(14.164031);
-
         // initialize the whole location stuff
-
         mLocationManager_gps = (LocationManager) getSystemService(LOCATION_SERVICE);
         mLocationManager_net = (LocationManager) getSystemService(LOCATION_SERVICE);
 
@@ -151,7 +156,7 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
                 DIM = 10;
                 break;
             case "Impossible":
-                PROBABILITY = 0.2;
+                PROBABILITY = 0.0;
                 MARGIN = 2;
                 DIM = 20;
                 break;

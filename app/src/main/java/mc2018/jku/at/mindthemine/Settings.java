@@ -61,11 +61,10 @@ class Settings {
 
             // Transform the chars to a String
             String readString = new String(inputBuffer);
-            show("Read text: "+readString);
 
             StringBuilder difficultyBuilder = new StringBuilder();
-            StringBuilder distanceBuilder = new StringBuilder();
 
+            this.distance = 0;
             int separator = 0;
             for(int i=0; i<len; i++) {
                 if(readString.charAt(i) == ';') {
@@ -80,7 +79,7 @@ class Settings {
                             break;
                         case 2:
                             if(Character.isDigit(readString.charAt(i)))
-                                distanceBuilder.append(readString.charAt(i));
+                                distance = distance*10 + (readString.charAt(i) - '0');
                             break;
                         default:
                             break;
@@ -89,10 +88,8 @@ class Settings {
             }
 
             this.difficulty = difficultyBuilder.toString();
-            if(distanceBuilder.toString() != "")
-                this.distance = Integer.parseInt(distanceBuilder.toString());
 
-            show("Elements found: "+difficulty+", "+vibrationEnabled+", "+distance);
+            //show("Elements found: "+difficulty+", "+vibrationEnabled+", "+distance);
         } catch(IOException ioe) {
             //show("File could not be read.\n"+ioe.getMessage());
             // maybe no such file exists
