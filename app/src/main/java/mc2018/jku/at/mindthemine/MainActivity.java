@@ -590,10 +590,10 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
             // TODO remove multiplicator for real life usage
             if (acc < settings.getDistance()) {
                 // for testing
-//                Location initLoc = new Location("");
-//
-//                initLoc.setLatitude(48.300992);
-//                initLoc.setLongitude(14.164031);
+                // Location initLoc = new Location("");
+                //
+                // initLoc.setLatitude(48.300992);
+                // initLoc.setLongitude(14.164031);
 
 
                 // center 48.300995, 14.164029
@@ -642,7 +642,7 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
                 else if (distance.length == 3)
                     bear = distance[2];
 
-                int dim = 10;
+                int dim = settings.getDistance();
                 int dir = -1; // -1...inside; 0...N; 1...E; 2...S; 3...W
                 double coeff;
                 double diag = Math.sqrt(dim / 2 * dim / 2 + dim / 2 * dim / 2);
