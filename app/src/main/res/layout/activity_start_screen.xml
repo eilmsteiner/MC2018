@@ -24,7 +24,7 @@
         app:layout_constraintEnd_toStartOf="@+id/guideline5"
         app:layout_constraintHorizontal_bias="0.0"
         app:layout_constraintStart_toStartOf="@+id/guideline2"
-        app:srcCompat="@drawable/ic_competitive" />
+        app:srcCompat="@drawable/ic_settings_lab"/>
 
     <ImageButton
         android:id="@+id/btnCompMP"
@@ -39,7 +39,7 @@
         app:layout_constraintHorizontal_bias="1.0"
         app:layout_constraintStart_toStartOf="@+id/guideline2"
         app:layout_constraintTop_toTopOf="@+id/guideline"
-        app:srcCompat="@drawable/ic_competitive" />
+        app:srcCompat="@drawable/ic_comp_lab" />
 
     <ImageButton
         android:id="@+id/btnSinglePlayer"
@@ -54,7 +54,7 @@
         app:layout_constraintEnd_toStartOf="@+id/guideline2"
         app:layout_constraintHorizontal_bias="1.0"
         app:layout_constraintStart_toStartOf="@+id/guideline3"
-        app:srcCompat="@drawable/ic_player" />
+        app:srcCompat="@drawable/ic_single_lab" />
 
     <ImageButton
         android:id="@+id/btnCoopMP"
@@ -69,7 +69,7 @@
         app:layout_constraintHorizontal_bias="0.0"
         app:layout_constraintStart_toStartOf="@+id/guideline3"
         app:layout_constraintTop_toTopOf="@+id/guideline"
-        app:srcCompat="@drawable/ic_cooperative" />
+        app:srcCompat="@drawable/ic_coop_lab" />
 
     <ImageView
         android:id="@+id/imgIcon"
