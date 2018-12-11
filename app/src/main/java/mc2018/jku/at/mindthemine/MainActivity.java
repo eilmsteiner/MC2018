@@ -733,9 +733,9 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
 
     private void updateIndicator(Button btnIndicator, float acc) {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
-            if (acc > settings.getDistance())
+            if (acc > settings.getDistance()/2)
                 btnIndicator.setBackgroundColor(getResources().getColor(android.R.color.holo_red_dark, this.getTheme()));
-            else if (acc > settings.getDistance()/2)
+            else if (acc > settings.getDistance()/3)
                 btnIndicator.setBackgroundColor(getResources().getColor(android.R.color.holo_orange_light, this.getTheme()));
             else
                 btnIndicator.setBackgroundColor(getResources().getColor(android.R.color.holo_green_light, this.getTheme()));
