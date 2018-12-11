@@ -19,6 +19,7 @@ import android.os.Bundle;
 import android.os.SystemClock;
 import android.os.VibrationEffect;
 import android.os.Vibrator;
+import android.support.annotation.NonNull;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AppCompatActivity;
@@ -79,7 +80,6 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
 
     // device sensor manager
     private SensorManager mSensorManager;
-
 
 
     @Override
@@ -190,7 +190,6 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
         Cell c = board.getActive();
         chosenCol = c.getColCoord();
         chosenRow = c.getRowCoord();
-        //chosenPosLocation = mLocationListener.
 
         for (int i = 0; i < DIM; i++) {
             TableRow row = new TableRow(this);
@@ -215,20 +214,6 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
                 iv.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {
-//                        if(board.isNotRunning()) return;
-//
-//                        int id = v.getId();
-//
-//                        int row = id % DIM;
-//                        int col = id / DIM;
-//
-//                        chosenRow = row;
-//                        chosenCol = col;
-//
-//                        board.setActive(row, col);
-//
-//                        drawBoard();
-
                         int id = v.getId();
 
                         int row = id % DIM;
@@ -242,28 +227,13 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
                 row.addView(iv);
             }
 
-            //row.setBackgroundColor(backgrounds[i]);
-
             ImageButton flagButton = findViewById(R.id.flagButton);
             flagButton.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
                     if (board.isNotRunning()) return;
 
-                    Cell cell = board.flagField(chosenRow, chosenCol);
-
-                    /*try {
-                        Vibrator vib = (Vibrator) getSystemService(VIBRATOR_SERVICE);
-                        // Vibrate for 100 milliseconds
-                        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-                            vib.vibrate(VibrationEffect.createOneShot(100, VibrationEffect.DEFAULT_AMPLITUDE));
-                        } else {
-                            //deprecated in API 26
-                            vib.vibrate(100);
-                        }
-                    } catch (Exception e) {
-                        // nothing to do
-                    }*/
+                    board.flagField(chosenRow, chosenCol);
 
                     checkBoard();
 
@@ -315,8 +285,6 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
 
                     drawBoard();
 
-                    //Toast.makeText(getBaseContext(), "New game started!", Toast.LENGTH_SHORT).show();
-                    //findViewById(R.id.restartButton).setVisibility(View.GONE);
                     remainingCounter.setText(String.format("%s", board.getRemainingCells()));
                 }
             });
@@ -326,7 +294,6 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
 
         drawBoard();
         remainingCounter.setText(String.format("%s", board.getRemainingCells()));
-        //Toast.makeText(getBaseContext(), "DONE", Toast.LENGTH_SHORT).show();
 
         // our compass image
         compassImageView = findViewById(R.id.compassImageView);
@@ -352,6 +319,7 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
 
             mLocationManager_gps.requestLocationUpdates(provider_net, 400, 1, mLocationListener);
         }
+        //noinspection deprecation
         mSensorManager.registerListener(this, mSensorManager.getDefaultSensor(Sensor.TYPE_ORIENTATION),
                 SensorManager.SENSOR_DELAY_GAME);
     }
@@ -393,60 +361,30 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
 
         int row = 0, col = 0;
 
-//        switch (dir){
-//            case "N":
-//                if(chosenRow > 0)
-//                    row = chosenRow - 1;
-//                else
-//                    row = chosenRow;
-//                col = chosenCol;
-//                break;
-//            case "E":
-//                if(chosenCol < board.getColCount()-1)
-//                    col = chosenCol + 1;
-//                else
-//                    col = chosenCol;
-//                row = chosenRow;
-//                break;
-//            case "S":
-//                if(chosenRow < board.getRowCount()-1)
-//                    row = chosenRow + 1;
-//                else
-//                    row = chosenRow;
-//                col = chosenCol;
-//                break;
-//            case "W":
-//                if(chosenCol > 0)
-//                    col = chosenCol - 1;
-//                else
-//                    col = chosenCol;
-//                row = chosenRow;
-//                break;
-//        }
-        switch (dir){
+        switch (dir) {
             case "N":
-                if(chosenCol > 0)
+                if (chosenCol > 0)
                     col = chosenCol - 1;
                 else
                     col = chosenCol;
                 row = chosenRow;
                 break;
             case "E":
-                if(chosenRow < board.getRowCount()-1)
+                if (chosenRow < board.getRowCount() - 1)
                     row = chosenRow + 1;
                 else
                     row = chosenRow;
                 col = chosenCol;
                 break;
             case "S":
-                if(chosenCol < board.getColCount()-1)
+                if (chosenCol < board.getColCount() - 1)
                     col = chosenCol + 1;
                 else
                     col = chosenCol;
                 row = chosenRow;
                 break;
             case "W":
-                if(chosenRow > 0)
+                if (chosenRow > 0)
                     row = chosenRow - 1;
                 else
                     row = chosenRow;
@@ -482,11 +420,6 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
         }
     }
 
-    private void setWrongFlag(Cell c) {
-        cells[c.getRowCoord()][c.getColCoord()].setImageResource(R.drawable.ic_wrong_flag);
-        cells[c.getRowCoord()][c.getColCoord()].setBackgroundColor(Color.LTGRAY);
-    }
-
     public void checkBoard() {
         if (board.isNotRunning()) {
             if (board.isWon()) {
@@ -498,13 +431,10 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
                 Cell c = board.getActive();
                 cells[c.getRowCoord()][c.getColCoord()].setImageResource(R.drawable.ic_explosion);
 
-                //drawBoard(DIM, DIM);
-
                 Toast.makeText(getBaseContext(), "GAME OVER", Toast.LENGTH_SHORT).show();
 
                 vibrate(false);
             }
-            //findViewById(R.id.restartButton).setVisibility(View.VISIBLE);
         }
     }
 
@@ -641,7 +571,7 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
             Location pos = new Location("");
             pos.setLatitude(location.getLatitude());
             pos.setLongitude(location.getLongitude());
-            if(activePosLocation == null) {
+            if (activePosLocation == null) {
                 activePosLocation = new Location("");
                 activePosLocation.setLatitude(pos.getLatitude());
                 activePosLocation.setLongitude(pos.getLongitude());
@@ -658,7 +588,7 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
             timeShow = 0;
 
             // TODO remove multiplicator for real life usage
-            if(acc < settings.getDistance()) {
+            if (acc < settings.getDistance()) {
                 // for testing
 //                Location initLoc = new Location("");
 //
@@ -703,8 +633,8 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
                 //pos.setLongitude(14.163950);
 
                 float[] distance = new float[2];
-                Location.distanceBetween(activePosLocation.getLatitude(),activePosLocation.getLongitude(),pos.getLatitude(),pos.getLongitude(),distance);
-                //Location.distanceBetween(initLoc.getLatitude(), initLoc.getLongitude(), pos.getLatitude(), pos.getLongitude(), distance);
+                Location.distanceBetween(activePosLocation.getLatitude(), activePosLocation.getLongitude(), pos.getLatitude(), pos.getLongitude(), distance);
+
                 float dist = distance[0];
                 float bear = -1;
                 if (distance.length == 2)
@@ -783,7 +713,6 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
                 }
 
 
-
             } else
                 Log.d("MainActivityLogger", "accurracy too bad");
         }
@@ -811,13 +740,6 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
             else
                 btnIndicator.setBackgroundColor(getResources().getColor(android.R.color.holo_green_light, this.getTheme()));
         }
-//          for testing during development
-//        if (acc > 30)
-//            btnIndicator.setBackgroundColor(getResources().getColor(android.R.color.holo_red_dark, this.getTheme()));
-//        else if (acc > 25)
-//            btnIndicator.setBackgroundColor(getResources().getColor(android.R.color.holo_orange_light, this.getTheme()));
-//        else
-//            btnIndicator.setBackgroundColor(getResources().getColor(android.R.color.holo_green_light, this.getTheme()));
 
     }
 
@@ -896,7 +818,7 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
     }
 
     @Override
-    public void onRequestPermissionsResult(int requestCode, String permissions[], int[] grantResults) {
+    public void onRequestPermissionsResult(int requestCode, @NonNull String permissions[], int[] grantResults) {
         switch (requestCode) {
             case MY_PERMISSIONS_REQUEST_LOCATION_FINE: {
                 // If request is cancelled, the result arrays are empty.

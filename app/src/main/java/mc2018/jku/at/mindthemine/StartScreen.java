@@ -11,6 +11,7 @@ import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.view.View;
 import android.widget.Button;
+import android.widget.ImageButton;
 import android.widget.Toast;
 
 public class StartScreen extends AppCompatActivity {
@@ -24,11 +25,13 @@ public class StartScreen extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_start_screen);
 
+        this.setTitle("Mind The Mine - Main Menu");
+
         while (!checkLocationPermission()) {
         }
 
 
-        Button sp = findViewById(R.id.btnSinglePlayer);
+        ImageButton sp = findViewById(R.id.btnSinglePlayer);
         sp.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -37,7 +40,7 @@ public class StartScreen extends AppCompatActivity {
             }
         });
 
-        Button coopMp = findViewById(R.id.btnCoopMP);
+        ImageButton coopMp = findViewById(R.id.btnCoopMP);
         coopMp.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -45,7 +48,7 @@ public class StartScreen extends AppCompatActivity {
             }
         });
 
-        Button compMp = findViewById(R.id.btnCompMP);
+        ImageButton compMp = findViewById(R.id.btnCompMP);
         compMp.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -53,7 +56,7 @@ public class StartScreen extends AppCompatActivity {
             }
         });
 
-        Button settings = findViewById(R.id.btnSettings);
+        ImageButton settings = findViewById(R.id.btnSettings);
         settings.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {

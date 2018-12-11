@@ -28,7 +28,7 @@
 
     <android.support.constraint.ConstraintLayout
         android:layout_width="match_parent"
-        android:layout_height="66dp">
+        android:layout_height="55dp">
 
         <ImageButton
             android:id="@+id/flagButton"
@@ -65,11 +65,11 @@
             android:background="@color/counter_bg"
             android:fontFamily="@font/digital_readout_heavy"
             android:gravity="center"
+            android:includeFontPadding="false"
             android:text="@string/remainingCounterInitVal"
             android:textAlignment="center"
             android:textColor="@android:color/holo_red_dark"
             android:textSize="50sp"
-            android:includeFontPadding="false"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toStartOf="@+id/revealButton"
             app:layout_constraintStart_toEndOf="@+id/flagButton"

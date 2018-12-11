@@ -22,12 +22,14 @@ public class SettingsActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_settings);
 
+        this.setTitle("Mind The Mine - Settings");
+
         settings = new Settings(this);
 
         Integer[] distances = new Integer[]{10, 25, 50, 75, 100, 125, 150, 175, 200, 250};
 
         distance = findViewById(R.id.spnDistance);
-        ArrayAdapter<Integer> adapter = new ArrayAdapter<Integer>(this, android.R.layout.simple_spinner_item, distances);
+        ArrayAdapter<Integer> adapter = new ArrayAdapter<>(this, android.R.layout.simple_spinner_item, distances);
         adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
         distance.setAdapter(adapter);
         int position = -1;

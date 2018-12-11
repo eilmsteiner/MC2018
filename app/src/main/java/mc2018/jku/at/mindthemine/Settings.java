@@ -89,7 +89,6 @@ class Settings {
 
             this.difficulty = difficultyBuilder.toString();
 
-            //show("Elements found: "+difficulty+", "+vibrationEnabled+", "+distance);
         } catch(IOException ioe) {
             //show("File could not be read.\n"+ioe.getMessage());
             // maybe no such file exists
@@ -119,7 +118,6 @@ class Settings {
             osw.flush();
             osw.close();
 
-            //show("Elements written: "+difficulty+", "+vibrationEnabled+", "+distance);
         } catch (IOException ioe) {
             show("Could not save settings.\n"+ioe.getMessage());
         }

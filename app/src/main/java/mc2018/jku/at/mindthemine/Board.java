@@ -64,7 +64,7 @@ class Board {
                 }
             }
 
-        }while(!hasBlanks());
+        } while(!hasBlanks());
 
         setRandomCellActive();
     }
@@ -233,7 +233,7 @@ class Board {
         return count;
     }
 
-    private boolean hasBlanks(){
+    boolean hasBlanks(){
         for(Cell[] row : board){
             for(Cell c : row){
                 if(c.isBlank()) return true;
@@ -243,11 +243,11 @@ class Board {
     }
 
 
-    public int getColCount() {
+    int getColCount() {
         return colCount;
     }
 
-    public int getRowCount() {
+    int getRowCount() {
         return rowCount;
     }
 }
