@@ -12,10 +12,10 @@ import android.widget.Toast;
 
 public class SettingsActivity extends AppCompatActivity {
 
-    Settings settings;
-    Spinner difficulty;
-    Spinner distance;
-    Switch vibration;
+    private Settings settings;
+    private Spinner difficulty;
+    private Spinner distance;
+    private Switch vibration;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {

@@ -13,13 +13,13 @@ class Board {
 
     private LinkedList<String> news;
 
-    Board(int rows, int cols){
+    public Board(int rows, int cols){
         this(rows, cols, 0.95);
     }
 
 
     // ratio probability of containing a mine (is 1-alpha like)
-    Board(int rows, int cols, double ratio) {
+    public Board(int rows, int cols, double ratio) {
         news = new LinkedList<>();
 
         colCount = cols;
@@ -69,7 +69,7 @@ class Board {
         setRandomCellActive();
     }
 
-    Cell revealCell(int row, int col) {
+    public Cell revealCell(int row, int col) {
         if (col < 0 || col >= colCount || row < 0 || row >= rowCount) return null;
 
         Cell cell = board[row][col];
@@ -106,7 +106,7 @@ class Board {
         return cell;
     }
 
-    Cell flagField(int row, int col) {
+    public Cell flagField(int row, int col) {
         board[row][col].changeFlagged();
 
         setActive(row, col);
@@ -139,7 +139,7 @@ class Board {
         if (this.isWon) this.isRunning = false;
     }
 
-    Cell[] getMines() {
+    public Cell[] getMines() {
         ArrayList<Cell> mines = new ArrayList<>();
 
         for (Cell[] row : board) {
@@ -152,23 +152,23 @@ class Board {
         return mines.toArray(new Cell[0]);
     }
 
-    boolean isNotRunning() {
+    public boolean isNotRunning() {
         return !this.isRunning;
     }
 
-    boolean isWon() {
+    public boolean isWon() {
         return this.isWon;
     }
 
     public Cell[][] getBoard() {
         return this.board;
-    }
+    } //TODO sinlose Methode?
 
-    Cell getCell(int row, int col) {
+    public Cell getCell(int row, int col) {
         return this.board[row][col];
     }
 
-    String getNews() {
+    public String getNews() {
         if (news.isEmpty()) return null;
         return news.remove();
     }
@@ -186,7 +186,7 @@ class Board {
         c.setActive(true);
     }
 
-    void setActive(int rowCoord, int colCoord) {
+    public void setActive(int rowCoord, int colCoord) {
         for (Cell[] row : board) {
             for (Cell c : row) {
                 if (c.getRowCoord() == rowCoord && c.getColCoord() == colCoord) {
@@ -198,7 +198,7 @@ class Board {
         }
     }
 
-    Cell getActive() {
+    public Cell getActive() {
         for (Cell[] row : board) {
             for (Cell c : row) {
                 if (c.isActive())
@@ -227,13 +227,13 @@ class Board {
 
         return sb.toString();
     }*/
-    int getRemainingCells() {
+    public int getRemainingCells() {
         int count = 0;
         for (Cell[] row : board) for (Cell c : row) if (!c.isOpen() && !c.hasFlag()) count++;
         return count;
     }
 
-    boolean hasBlanks(){
+    private boolean hasBlanks(){
         for(Cell[] row : board){
             for(Cell c : row){
                 if(c.isBlank()) return true;
@@ -243,11 +243,11 @@ class Board {
     }
 
 
-    int getColCount() {
+    public int getColCount() {
         return colCount;
     }
 
-    int getRowCount() {
+    public int getRowCount() {
         return rowCount;
     }
 }

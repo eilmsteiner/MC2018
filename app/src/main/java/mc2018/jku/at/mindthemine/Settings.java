@@ -22,27 +22,27 @@ class Settings {
     private int vibrationEnabled = 1;
     private int distance = 10;
 
-    String getDifficulty(){ return difficulty; }
-    int getDistance(){ return distance; }
-    boolean isVibrationEnabled() { return vibrationEnabled == 1; }
+    public String getDifficulty(){ return difficulty; }
+    public int getDistance(){ return distance; }
+    public boolean isVibrationEnabled() { return vibrationEnabled == 1; }
 
-    Settings(Context context){
+    public Settings(Context context){
         this.context = context;
         this.filePath = context.getFilesDir().toString()+"/"+FILENAME;
         this.loadSettings();
     }
 
-    void setDifficulty(String difficulty) {
+    public void setDifficulty(String difficulty) {
         this.difficulty = difficulty;
         saveSettings();
     }
 
-    void setVibrationEnabled(int vibrationEnabled){
+    public void setVibrationEnabled(int vibrationEnabled){
         this.vibrationEnabled = vibrationEnabled;
         saveSettings();
     }
 
-    void setDistance(int distance){
+    public void setDistance(int distance){
         this.distance = distance;
         saveSettings();
     }

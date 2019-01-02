@@ -13,7 +13,7 @@ public class Cell {
         this(rowCoord, colCoord, false);
     }
 
-    Cell(int rowCoord, int colCoord, boolean hasMine) {
+    public Cell(int rowCoord, int colCoord, boolean hasMine) {
         this.colCoord = colCoord;
         this.rowCoord = rowCoord;
         this.hasMine = hasMine;
@@ -23,22 +23,22 @@ public class Cell {
         this.surroundingMines = 0;
     }
 
-    boolean hasMine() { return this.hasMine; }
-    boolean hasFlag() { return this.hasFlag; }
-    boolean isBlank() { return (getSurroundingMines() == 0 && !hasMine()); }
-    void changeFlagged() { this.hasFlag = !this.hasFlag; }
+    public boolean hasMine() { return this.hasMine; }
+    public boolean hasFlag() { return this.hasFlag; }
+    public boolean isBlank() { return (getSurroundingMines() == 0 && !hasMine()); }
+    public void changeFlagged() { this.hasFlag = !this.hasFlag; }
 
-    boolean isActive() { return this.isActive; }
-    void setActive(boolean active) { this.isActive = active; }
+    public boolean isActive() { return this.isActive; }
+    public void setActive(boolean active) { this.isActive = active; }
 
-    boolean isOpen() { return this.isOpen; }
-    void reveal() { this.isOpen = true; }
+    public boolean isOpen() { return this.isOpen; }
+    public void reveal() { this.isOpen = true; }
 
-    void setSurroundingMines(int val) { this.surroundingMines = val; }
-    int getSurroundingMines() { return this.surroundingMines; }
+    public void setSurroundingMines(int val) { this.surroundingMines = val; }
+    public int getSurroundingMines() { return this.surroundingMines; }
 
-    int getRowCoord() { return this.rowCoord; }
-    int getColCoord() { return this.colCoord; }
+    public int getRowCoord() { return this.rowCoord; }
+    public int getColCoord() { return this.colCoord; }
 
     /*@Override
     public String toString() {

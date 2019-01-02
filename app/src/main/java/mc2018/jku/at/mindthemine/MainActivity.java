@@ -40,15 +40,16 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 public class MainActivity extends AppCompatActivity implements SensorEventListener {
+    //TODO vl können wir die Klasse noch ein bisschen zerteilen 900 Zeilen sind schon sehr viel :D
     // test
-    int DIM = 6;
-    double PROBABILITY = 6;
-    int MARGIN = 6; // always set one higher than needed
+    private int DIM = 6;
+    private double PROBABILITY = 6;
+    private int MARGIN = 6; // always set one higher than needed
 
-    Settings settings;
+    private Settings settings;
 
-    Board board;
-    ImageView[][] cells;
+    private Board board;
+    private ImageView[][] cells;
 
     public int cellColor;
 
