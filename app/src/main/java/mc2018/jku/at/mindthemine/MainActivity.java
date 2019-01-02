@@ -41,6 +41,7 @@ import android.widget.Toast;
 
 public class MainActivity extends AppCompatActivity implements SensorEventListener {
     //TODO vl können wir die Klasse noch ein bisschen zerteilen 900 Zeilen sind schon sehr viel :D
+    //TODO z.B. SensorEventListener, LocationListner , Board initialization auslagern, ...
     // test
     private int DIM = 6;
     private double PROBABILITY = 6;
@@ -60,12 +61,10 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
 
     private LocationManager mLocationManager_gps;
     private LocationManager mLocationManager_net;
-    private static int LOCATION_REFRESH_DISTANCE = 2000;
-    private static int LOCATION_REFRESH_TIME = 1;
+    private static final int LOCATION_REFRESH_DISTANCE = 2000;
+    private static final int LOCATION_REFRESH_TIME = 1;
     public static final int MY_PERMISSIONS_REQUEST_LOCATION_FINE = 2;
     public static final int MY_PERMISSIONS_REQUEST_LOCATION_COARSE = 1;
-    private String provider_gps = LocationManager.GPS_PROVIDER;
-    private String provider_net = LocationManager.NETWORK_PROVIDER;
     private Chronometer cmTimer;
     private TextView txtAcc;
     private Button btnIndicator;
@@ -81,6 +80,11 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
 
     // device sensor manager
     private SensorManager mSensorManager;
+
+    //Motion sensors
+    private Sensor gSensor, aSensor;
+    private GestureRecognition gestureRecognition;
+    private boolean gestureDetectionActive = true;
 
 
     @Override
@@ -103,9 +107,9 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
         while (!checkLocationPermission()) {
         }
 
-        mLocationManager_gps.requestLocationUpdates(provider_gps, LOCATION_REFRESH_TIME,
+        mLocationManager_gps.requestLocationUpdates(LocationManager.GPS_PROVIDER, LOCATION_REFRESH_TIME,
                 LOCATION_REFRESH_DISTANCE, mLocationListener);
-        mLocationManager_net.requestLocationUpdates(provider_net, LOCATION_REFRESH_TIME,
+        mLocationManager_net.requestLocationUpdates(LocationManager.NETWORK_PROVIDER, LOCATION_REFRESH_TIME,
                 LOCATION_REFRESH_DISTANCE, mLocationListener);
 
         cmTimer = findViewById(R.id.txtAge);
@@ -232,21 +236,7 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
             flagButton.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    if (board.isNotRunning()) return;
-
-                    board.flagField(chosenRow, chosenCol);
-
-                    checkBoard();
-
-                    // show news
-                    String s;
-                    while ((s = board.getNews()) != null) {
-                        Toast.makeText(getBaseContext(), s, Toast.LENGTH_SHORT).show();
-                    }
-
-                    drawBoard();
-                    remainingCounter.setText(String.format("%s", board.getRemainingCells()));
-
+                    setFlag();
                 }
             });
 
@@ -254,20 +244,7 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
             revealButton.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    if (board.isNotRunning()) return;
-
-                    board.revealCell(chosenRow, chosenCol);
-
-                    checkBoard();
-
-                    // show news
-                    String s;
-                    while ((s = board.getNews()) != null) {
-                        Toast.makeText(getBaseContext(), s, Toast.LENGTH_SHORT).show();
-                    }
-
-                    drawBoard();
-                    remainingCounter.setText(String.format("%s", board.getRemainingCells()));
+                    reveal();
                 }
             });
 
@@ -302,6 +279,14 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
 
         // initialize your android device sensor capabilities
         mSensorManager = (SensorManager) getSystemService(SENSOR_SERVICE);
+
+        // initialize motion sensors
+        gSensor = mSensorManager.getDefaultSensor(Sensor.TYPE_GRAVITY);
+        aSensor = mSensorManager.getDefaultSensor(Sensor.TYPE_LINEAR_ACCELERATION);
+        if(gSensor == null || aSensor == null) {
+            Toast.makeText(getBaseContext(), "Gesture detection is not possible on your phone.", Toast.LENGTH_LONG).show();
+            gestureDetectionActive = false;
+        } else gestureRecognition = new GestureRecognition(this);
     }
 
 
@@ -312,21 +297,26 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
                 Manifest.permission.ACCESS_FINE_LOCATION)
                 == PackageManager.PERMISSION_GRANTED) {
 
-            mLocationManager_gps.requestLocationUpdates(provider_gps, 400, 1, mLocationListener);
+            mLocationManager_gps.requestLocationUpdates(LocationManager.GPS_PROVIDER, 400, 1, mLocationListener);
         }
         if (ContextCompat.checkSelfPermission(this,
                 Manifest.permission.ACCESS_COARSE_LOCATION)
                 == PackageManager.PERMISSION_GRANTED) {
 
-            mLocationManager_gps.requestLocationUpdates(provider_net, 400, 1, mLocationListener);
+            mLocationManager_gps.requestLocationUpdates(LocationManager.NETWORK_PROVIDER, 400, 1, mLocationListener);
         }
         //noinspection deprecation
         mSensorManager.registerListener(this, mSensorManager.getDefaultSensor(Sensor.TYPE_ORIENTATION),
                 SensorManager.SENSOR_DELAY_GAME);
+        //register motion Sensors
+        if(gestureDetectionActive) {
+            mSensorManager.registerListener(gestureRecognition, gSensor, SensorManager.SENSOR_DELAY_NORMAL);
+            mSensorManager.registerListener(gestureRecognition, aSensor, SensorManager.SENSOR_DELAY_GAME);
+        }
     }
 
     @Override
-    protected void onPause() {
+    protected void onPause() { //TODO ToDiscuss: wird GPS abgeschaltet wenn man das Display sperrt?
         super.onPause();
         if (ContextCompat.checkSelfPermission(this,
                 Manifest.permission.ACCESS_FINE_LOCATION)
@@ -338,13 +328,31 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
                 Manifest.permission.ACCESS_COARSE_LOCATION)
                 == PackageManager.PERMISSION_GRANTED) {
 
-            mLocationManager_gps.requestLocationUpdates(provider_net, 400, 1, mLocationListener);
+            mLocationManager_gps.requestLocationUpdates(LocationManager.NETWORK_PROVIDER, 400, 1, mLocationListener);
         }
 
         // to stop the listener and save battery
         mSensorManager.unregisterListener(this);
+
+        //stop motion sensor
+        mSensorManager.unregisterListener(gestureRecognition);
     }
 
+    public void setFlag() {
+        if (board.isNotRunning()) return;
+        board.flagField(chosenRow, chosenCol);
+        checkBoard();
+        drawBoard();
+        remainingCounter.setText(String.format("%s", board.getRemainingCells()));
+    }
+
+    public void reveal() {
+        if (board.isNotRunning()) return;
+        board.revealCell(chosenRow, chosenCol);
+        checkBoard();
+        drawBoard();
+        remainingCounter.setText(String.format("%s", board.getRemainingCells()));
+    }
 
     private void moveToCell(int row, int col) {
         if (board.isNotRunning()) return;
@@ -833,7 +841,7 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
                             == PackageManager.PERMISSION_GRANTED) {
 
                         //Request location updates:
-                        mLocationManager_gps.requestLocationUpdates(provider_gps, 400, 1, mLocationListener);
+                        mLocationManager_gps.requestLocationUpdates(LocationManager.GPS_PROVIDER, 400, 1, mLocationListener);
                     }
 
                 } else {
@@ -856,7 +864,7 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
                             == PackageManager.PERMISSION_GRANTED) {
 
                         //Request location updates:
-                        mLocationManager_net.requestLocationUpdates(provider_net, 400, 1, mLocationListener);
+                        mLocationManager_net.requestLocationUpdates(LocationManager.NETWORK_PROVIDER, 400, 1, mLocationListener);
                     }
 
                 } else {

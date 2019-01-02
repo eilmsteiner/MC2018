@@ -11,7 +11,6 @@ class Board {
     private boolean isRunning;
     private boolean isWon;
 
-    private LinkedList<String> news;
 
     public Board(int rows, int cols){
         this(rows, cols, 0.95);
@@ -20,7 +19,6 @@ class Board {
 
     // ratio probability of containing a mine (is 1-alpha like)
     public Board(int rows, int cols, double ratio) {
-        news = new LinkedList<>();
 
         colCount = cols;
         rowCount = rows;
@@ -166,11 +164,6 @@ class Board {
 
     public Cell getCell(int row, int col) {
         return this.board[row][col];
-    }
-
-    public String getNews() {
-        if (news.isEmpty()) return null;
-        return news.remove();
     }
 
     private void setRandomCellActive() {
