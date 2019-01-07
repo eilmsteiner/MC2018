@@ -16,6 +16,7 @@ public class SettingsActivity extends AppCompatActivity {
     private Spinner difficulty;
     private Spinner distance;
     private Switch vibration;
+    private Switch gesture;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -86,6 +87,15 @@ public class SettingsActivity extends AppCompatActivity {
             @Override
             public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
                 settings.setVibrationEnabled((isChecked)?1:0);
+            }
+        });
+
+        gesture = findViewById(R.id.swtGesture);
+        gesture.setChecked(settings.isGestureEnabled());
+        gesture.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+            @Override
+            public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+                settings.setGestureEnabled((isChecked)?1:0);
             }
         });
     }

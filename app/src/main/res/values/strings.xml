@@ -20,4 +20,5 @@
     <string name="lblAccInitVal">" "</string>
     <string name="distance">Distance in m:</string>
     <string name="space" />
+    <string name="gestures">Gestures</string>
 </resources>

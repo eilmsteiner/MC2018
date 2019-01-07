@@ -15,7 +15,7 @@ public class GestureRecognition implements SensorEventListener {
     private final MainActivity mainActivity;
     private static final long SECOND = 1000000000L;
 
-    public GestureRecognition(MainActivity mainActivity) {
+    GestureRecognition(MainActivity mainActivity) {
         this.mainActivity = mainActivity;
         xWindow = new LinkedList<>();
         yWindow = new LinkedList<>();
@@ -28,41 +28,43 @@ public class GestureRecognition implements SensorEventListener {
 
     @Override
     public void onSensorChanged(SensorEvent event) {
-        if(event.sensor.getType() == Sensor.TYPE_GRAVITY) {
-            actualYGravity = event.values[1];
-        } else if (event.sensor.getType() == Sensor.TYPE_LINEAR_ACCELERATION) {
-            if (actualYGravity >= 8.3 && event.timestamp - lock > SECOND) {
-                xWindow.poll();
-                yWindow.poll();
-                xWindow.add(event.values[0]);
-                yWindow.add(event.values[1]);
-                float sumX=0, sumY=0;
-                for(int i = 0; i < xWindow.size(); i++) {
-                    sumX += (float)xWindow.toArray()[i];
-                    sumY += (float)yWindow.toArray()[i];
-                }
-                double avgX = sumX/xWindow.size();
-                double avgY = sumY/yWindow.size();
-                if(avgY <= -13) {
-                    timeFlag = event.timestamp;
-                } else if (event.timestamp - timeFlag < 0.6*SECOND && avgY >= 9) {
-                    mainActivity.setFlag();
-                    resetTimes();
-                    lock = event.timestamp;
-                }
-                if(avgX <= -8 && avgY < 6 && avgY > -7) {
-                    timeLeft = event.timestamp;
-                } else if (event.timestamp-timeLeft < 0.6*SECOND && avgX >= 8.5) {
-                    mainActivity.reveal();
-                    resetTimes();
-                    lock = event.timestamp;
-                }
-                if(avgX >= 8 && avgY < 7 && avgY > -7) {
-                    timeRight = event.timestamp;
-                } else if (event.timestamp - timeRight < 0.6*SECOND && avgX <= -8.5) {
-                    mainActivity.reveal();
-                    resetTimes();
-                    lock = event.timestamp;
+        if(this.mainActivity.settings.isGestureEnabled()) { // only if enabled
+            if (event.sensor.getType() == Sensor.TYPE_GRAVITY) {
+                actualYGravity = event.values[1];
+            } else if (event.sensor.getType() == Sensor.TYPE_LINEAR_ACCELERATION) {
+                if (actualYGravity >= 8.3 && event.timestamp - lock > SECOND) {
+                    xWindow.poll();
+                    yWindow.poll();
+                    xWindow.add(event.values[0]);
+                    yWindow.add(event.values[1]);
+                    float sumX = 0, sumY = 0;
+                    for (int i = 0; i < xWindow.size(); i++) {
+                        sumX += (float) xWindow.toArray()[i];
+                        sumY += (float) yWindow.toArray()[i];
+                    }
+                    double avgX = sumX / xWindow.size();
+                    double avgY = sumY / yWindow.size();
+                    if (avgY <= -13) {
+                        timeFlag = event.timestamp;
+                    } else if (event.timestamp - timeFlag < 0.6 * SECOND && avgY >= 9) {
+                        mainActivity.setFlag();
+                        resetTimes();
+                        lock = event.timestamp;
+                    }
+                    if (avgX <= -8 && avgY < 6 && avgY > -7) {
+                        timeLeft = event.timestamp;
+                    } else if (event.timestamp - timeLeft < 0.6 * SECOND && avgX >= 8.5) {
+                        mainActivity.reveal();
+                        resetTimes();
+                        lock = event.timestamp;
+                    }
+                    if (avgX >= 8 && avgY < 7 && avgY > -7) {
+                        timeRight = event.timestamp;
+                    } else if (event.timestamp - timeRight < 0.6 * SECOND && avgX <= -8.5) {
+                        mainActivity.reveal();
+                        resetTimes();
+                        lock = event.timestamp;
+                    }
                 }
             }
         }

@@ -21,12 +21,14 @@ class Settings {
     private String difficulty = "Easy";
     private int vibrationEnabled = 1;
     private int distance = 10;
+    private int gestureEnabled = 1;
 
     public String getDifficulty(){ return difficulty; }
     public int getDistance(){ return distance; }
-    public boolean isVibrationEnabled() { return vibrationEnabled == 1; }
+    boolean isVibrationEnabled() { return vibrationEnabled == 1; }
+    boolean isGestureEnabled() { return gestureEnabled == 1; }
 
-    public Settings(Context context){
+    Settings(Context context){
         this.context = context;
         this.filePath = context.getFilesDir().toString()+"/"+FILENAME;
         this.loadSettings();
@@ -36,14 +38,18 @@ class Settings {
         this.difficulty = difficulty;
         saveSettings();
     }
-
-    public void setVibrationEnabled(int vibrationEnabled){
+    void setVibrationEnabled(int vibrationEnabled){
         this.vibrationEnabled = vibrationEnabled;
         saveSettings();
     }
 
     public void setDistance(int distance){
         this.distance = distance;
+        saveSettings();
+    }
+
+    void setGestureEnabled(int gestureEnabled){
+        this.gestureEnabled = gestureEnabled;
         saveSettings();
     }
 
@@ -81,6 +87,9 @@ class Settings {
                             if(Character.isDigit(readString.charAt(i)))
                                 distance = distance*10 + (readString.charAt(i) - '0');
                             break;
+                        case 3:
+                            this.gestureEnabled = readString.charAt(i) - '0';
+                            break;
                         default:
                             break;
                     }
@@ -107,6 +116,8 @@ class Settings {
         writeString.append(Integer.toString(this.vibrationEnabled));
         writeString.append(";");
         writeString.append(this.distance);
+        writeString.append(";");
+        writeString.append(Integer.toString(this.gestureEnabled));
         try {
             FileOutputStream fOut = context.openFileOutput(FILENAME, MODE_PRIVATE);
             OutputStreamWriter osw = new OutputStreamWriter(fOut);

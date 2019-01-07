@@ -47,7 +47,7 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
     private double PROBABILITY = 6;
     private int MARGIN = 6; // always set one higher than needed
 
-    private Settings settings;
+    Settings settings;
 
     private Board board;
     private ImageView[][] cells;
@@ -93,7 +93,11 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
 
         //Remove title bar
         this.requestWindowFeature(Window.FEATURE_NO_TITLE);
-        getSupportActionBar().hide();
+        try {
+            getSupportActionBar().hide();
+        }catch(NullPointerException e){
+            Toast.makeText(this, "Failure hiding Action Bar element.", Toast.LENGTH_SHORT).show();
+        }
 
         //Remove notification bar
         this.getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN, WindowManager.LayoutParams.FLAG_FULLSCREEN);
@@ -104,8 +108,7 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
         mLocationManager_gps = (LocationManager) getSystemService(LOCATION_SERVICE);
         mLocationManager_net = (LocationManager) getSystemService(LOCATION_SERVICE);
 
-        while (!checkLocationPermission()) {
-        }
+        while (!checkLocationPermission()) ;
 
         mLocationManager_gps.requestLocationUpdates(LocationManager.GPS_PROVIDER, LOCATION_REFRESH_TIME,
                 LOCATION_REFRESH_DISTANCE, mLocationListener);
@@ -652,7 +655,7 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
                     bear = distance[2];
 
                 int dim = settings.getDistance();
-                int dir = -1; // -1...inside; 0...N; 1...E; 2...S; 3...W
+                int dir = -2; // -1...inside; 0...N; 1...E; 2...S; 3...W
                 double coeff;
                 double diag = Math.sqrt(dim / 2 * dim / 2 + dim / 2 * dim / 2);
                 if (dist < dim / 2) {
@@ -827,7 +830,7 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
     }
 
     @Override
-    public void onRequestPermissionsResult(int requestCode, @NonNull String permissions[], int[] grantResults) {
+    public void onRequestPermissionsResult(int requestCode, @NonNull String permissions[], @NonNull int[] grantResults) {
         switch (requestCode) {
             case MY_PERMISSIONS_REQUEST_LOCATION_FINE: {
                 // If request is cancelled, the result arrays are empty.
