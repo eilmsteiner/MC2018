@@ -286,6 +286,7 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
         // initialize motion sensors
         gSensor = mSensorManager.getDefaultSensor(Sensor.TYPE_GRAVITY);
         aSensor = mSensorManager.getDefaultSensor(Sensor.TYPE_LINEAR_ACCELERATION);
+        gestureDetectionActive = settings.isGestureEnabled();
         if(gSensor == null || aSensor == null) {
             Toast.makeText(getBaseContext(), "Gesture detection is not possible on your phone.", Toast.LENGTH_LONG).show();
             gestureDetectionActive = false;
