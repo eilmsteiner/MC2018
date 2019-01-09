@@ -19,7 +19,7 @@ public class GestureRecognition implements SensorEventListener {
         this.mainActivity = mainActivity;
         xWindow = new LinkedList<>();
         yWindow = new LinkedList<>();
-        for (int i = 0; i < 10; i++) {
+        for (int i = 0; i < 5; i++) {
             xWindow.add(0f);
             yWindow.add(0f);
         }
@@ -43,9 +43,9 @@ public class GestureRecognition implements SensorEventListener {
                 }
                 double avgX = sumX / xWindow.size();
                 double avgY = sumY / yWindow.size();
-                if (avgY <= -13) {
+                if (avgY <= -10) {
                     timeFlag = event.timestamp;
-                } else if (event.timestamp - timeFlag < 0.6 * SECOND && avgY >= 9) {
+                } else if (event.timestamp - timeFlag < 0.6 * SECOND && avgY >= 7) {
                     mainActivity.setFlag();
                     resetTimes();
                     lock = event.timestamp;
