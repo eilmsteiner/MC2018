@@ -39,6 +39,14 @@ import android.widget.TableRow;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import java.io.FileInputStream;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.io.ObjectInputStream;
+import java.io.ObjectOutputStream;
+import java.io.OutputStreamWriter;
+import java.util.Locale;
+
 public class MainActivity extends AppCompatActivity implements SensorEventListener {
     //TODO vl können wir die Klasse noch ein bisschen zerteilen 900 Zeilen sind schon sehr viel :D
     //TODO z.B. SensorEventListener, LocationListner , Board initialization auslagern, ...
@@ -46,6 +54,7 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
     private int DIM = 6;
     private double PROBABILITY = 6;
     private int MARGIN = 6; // always set one higher than needed
+    private final static String FILENAME = "singleplayer";
 
     Settings settings;
 
@@ -132,9 +141,9 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
                 if (s % 5 == 0)
                     timeShow += 5;
                 if (timeShow == 0)
-                    cmTimer.setText(String.format("< %3d", 5));
+                    cmTimer.setText(String.format(Locale.getDefault(), "< %3d", 5));
                 else
-                    cmTimer.setText(String.format("< %3d", timeShow));
+                    cmTimer.setText(String.format(Locale.getDefault(), "< %3d", timeShow));
             }
         });
 
@@ -193,7 +202,9 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
 
         cells = new ImageView[DIM][DIM];
 
-        board = new Board(DIM, DIM, PROBABILITY);
+        board = readSave();
+        if(board == null)
+            board = new Board(DIM, DIM, PROBABILITY);
 
         Cell c = board.getActive();
         chosenCol = c.getColCoord();
@@ -240,6 +251,7 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
                 @Override
                 public void onClick(View v) {
                     setFlag();
+                    saveGame();
                 }
             });
 
@@ -248,6 +260,7 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
                 @Override
                 public void onClick(View v) {
                     reveal();
+                    saveGame();
                 }
             });
 
@@ -265,6 +278,7 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
                     chosenRow = c.getRowCoord();
 
                     drawBoard();
+                    saveGame();
 
                     remainingCounter.setText(String.format("%s", board.getRemainingCells()));
                 }
@@ -278,7 +292,6 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
 
         // our compass image
         compassImageView = findViewById(R.id.compassImageView);
-
 
         // initialize your android device sensor capabilities
         mSensorManager = (SensorManager) getSystemService(SENSOR_SERVICE);
@@ -365,6 +378,7 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
         chosenRow = row;
 
         board.setActive(row, col);
+        saveGame();
 
         drawBoard();
     }
@@ -416,7 +430,6 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
 
         drawBoard();
     }
-
 
     private int convertToDp(int pixelValue) {
         float scale = getResources().getDisplayMetrics().density;
@@ -591,7 +604,7 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
             }
 
             float acc = location.getAccuracy();
-            txtAcc.setText(String.format("%.1f", acc));
+            txtAcc.setText(String.format(Locale.getDefault(), "%.1f", acc));
 
             updateIndicator(btnIndicator, acc);
 
@@ -725,6 +738,8 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
                         break;
                 }
 
+                if(dir >= 0 && dir <= 3)
+                    saveGame();
 
             } else
                 Log.d("MainActivityLogger", "accurracy too bad");
@@ -911,5 +926,36 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
     @Override
     public void onAccuracyChanged(Sensor sensor, int accuracy) {
 
+    }
+
+    private void saveGame(){
+        try {
+            FileOutputStream fos = this.getBaseContext().openFileOutput(FILENAME, Context.MODE_PRIVATE);
+            ObjectOutputStream oos = new ObjectOutputStream(fos);
+            oos.writeObject(this.board);
+            oos.flush();
+            oos.close();
+        } catch (IOException ioe) {
+            //show("Could not save settings.\n"+ioe.getMessage());
+            Log.d("MainActivitySaveLogger", "File could not be written");
+        }
+    }
+
+    private Board readSave(){
+        Board b = null;
+        try {
+            FileInputStream fin = this.getBaseContext().openFileInput(FILENAME);
+            ObjectInputStream in = new ObjectInputStream(fin);
+            b = (Board) in.readObject();
+            in.close();
+            fin.close();
+        } catch (IOException i) {
+            // what to do?
+            Log.d("MainActivitySaveLogger", "File could not be read.");
+        } catch (ClassNotFoundException c) {
+            // what to do?
+            Log.d("MainActivitySaveLogger", "Board not found");
+        }
+        return b;
     }
 }

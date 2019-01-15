@@ -1,6 +1,8 @@
 package mc2018.jku.at.mindthemine;
 
-public class Cell {
+import java.io.Serializable;
+
+public class Cell implements Serializable {
     private boolean hasMine;
     private boolean hasFlag;
     private boolean isOpen;
@@ -13,7 +15,7 @@ public class Cell {
         this(rowCoord, colCoord, false);
     }
 
-    public Cell(int rowCoord, int colCoord, boolean hasMine) {
+    Cell(int rowCoord, int colCoord, boolean hasMine) {
         this.colCoord = colCoord;
         this.rowCoord = rowCoord;
         this.hasMine = hasMine;
@@ -23,22 +25,22 @@ public class Cell {
         this.surroundingMines = 0;
     }
 
-    public boolean hasMine() { return this.hasMine; }
-    public boolean hasFlag() { return this.hasFlag; }
-    public boolean isBlank() { return (getSurroundingMines() == 0 && !hasMine()); }
-    public void changeFlagged() { this.hasFlag = !this.hasFlag; }
+    boolean hasMine() { return this.hasMine; }
+    boolean hasFlag() { return this.hasFlag; }
+    boolean isBlank() { return (getSurroundingMines() == 0 && !hasMine()); }
+    void changeFlagged() { this.hasFlag = !this.hasFlag; }
 
-    public boolean isActive() { return this.isActive; }
-    public void setActive(boolean active) { this.isActive = active; }
+    boolean isActive() { return this.isActive; }
+    void setActive(boolean active) { this.isActive = active; }
 
-    public boolean isOpen() { return this.isOpen; }
-    public void reveal() { this.isOpen = true; }
+    boolean isOpen() { return this.isOpen; }
+    void reveal() { this.isOpen = true; }
 
-    public void setSurroundingMines(int val) { this.surroundingMines = val; }
-    public int getSurroundingMines() { return this.surroundingMines; }
+    void setSurroundingMines(int val) { this.surroundingMines = val; }
+    int getSurroundingMines() { return this.surroundingMines; }
 
-    public int getRowCoord() { return this.rowCoord; }
-    public int getColCoord() { return this.colCoord; }
+    int getRowCoord() { return this.rowCoord; }
+    int getColCoord() { return this.colCoord; }
 
     /*@Override
     public String toString() {
