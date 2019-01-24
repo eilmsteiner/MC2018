@@ -23,27 +23,32 @@ class Settings {
     private int distance = 10;
     private int gestureEnabled = 1;
 
-    public String getDifficulty(){ return difficulty; }
-    public int getDistance(){ return distance; }
+    private String uid;
+
+    String getDifficulty(){ return difficulty; }
+    String getUid(){ return uid; }
+    int getDistance(){ return distance; }
     boolean isVibrationEnabled() { return vibrationEnabled == 1; }
     boolean isGestureEnabled() { return gestureEnabled == 1; }
 
     Settings(Context context){
         this.context = context;
         this.filePath = context.getFilesDir().toString()+"/"+FILENAME;
+        this.uid = Identifier.id(context);
         this.loadSettings();
     }
 
-    public void setDifficulty(String difficulty) {
+    void setDifficulty(String difficulty) {
         this.difficulty = difficulty;
         saveSettings();
     }
+
     void setVibrationEnabled(int vibrationEnabled){
         this.vibrationEnabled = vibrationEnabled;
         saveSettings();
     }
 
-    public void setDistance(int distance){
+    void setDistance(int distance){
         this.distance = distance;
         saveSettings();
     }
@@ -69,6 +74,7 @@ class Settings {
             String readString = new String(inputBuffer);
 
             StringBuilder difficultyBuilder = new StringBuilder();
+            StringBuilder uidBuilder = new StringBuilder();
 
             this.distance = 0;
             int separator = 0;
@@ -90,13 +96,21 @@ class Settings {
                         case 3:
                             this.gestureEnabled = readString.charAt(i) - '0';
                             break;
+                        case 4:
+                            uidBuilder.append(readString.charAt(i));
+                            break;
                         default:
                             break;
                     }
                 }
             }
 
-            this.difficulty = difficultyBuilder.toString();
+            if(difficultyBuilder.length() > 0) {
+                this.difficulty = difficultyBuilder.toString();
+            }
+            if(uidBuilder.length() > 0) {
+                this.uid = uidBuilder.toString();
+            }
 
         } catch(IOException ioe) {
             //show("File could not be read.\n"+ioe.getMessage());
@@ -118,6 +132,8 @@ class Settings {
         writeString.append(this.distance);
         writeString.append(";");
         writeString.append(Integer.toString(this.gestureEnabled));
+        writeString.append(";");
+        writeString.append(this.uid);
         try {
             FileOutputStream fOut = context.openFileOutput(FILENAME, MODE_PRIVATE);
             OutputStreamWriter osw = new OutputStreamWriter(fOut);

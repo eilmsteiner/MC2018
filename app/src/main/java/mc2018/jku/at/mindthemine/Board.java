@@ -1,5 +1,8 @@
 package mc2018.jku.at.mindthemine;
 
+import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
+
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Random;
@@ -242,5 +245,12 @@ class Board implements Serializable {
 
     int getRowCount() {
         return rowCount;
+    }
+
+    String getGSON(){
+        Gson gson = new Gson();
+
+        // 2. Java object to JSON, and assign to a String
+        return gson.toJson(this);
     }
 }

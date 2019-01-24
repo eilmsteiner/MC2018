@@ -67,7 +67,6 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
 
     private TextView remainingCounter;
 
-
     private LocationManager mLocationManager_gps;
     private LocationManager mLocationManager_net;
     private static final int LOCATION_REFRESH_DISTANCE = 2000;
@@ -119,10 +118,8 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
 
         while (!checkLocationPermission()) ;
 
-        mLocationManager_gps.requestLocationUpdates(LocationManager.GPS_PROVIDER, LOCATION_REFRESH_TIME,
-                LOCATION_REFRESH_DISTANCE, mLocationListener);
-        mLocationManager_net.requestLocationUpdates(LocationManager.NETWORK_PROVIDER, LOCATION_REFRESH_TIME,
-                LOCATION_REFRESH_DISTANCE, mLocationListener);
+        mLocationManager_gps.requestLocationUpdates(LocationManager.GPS_PROVIDER, LOCATION_REFRESH_TIME, LOCATION_REFRESH_DISTANCE, mLocationListener);
+        mLocationManager_net.requestLocationUpdates(LocationManager.NETWORK_PROVIDER, LOCATION_REFRESH_TIME, LOCATION_REFRESH_DISTANCE, mLocationListener);
 
         cmTimer = findViewById(R.id.txtAge);
         cmTimer.setText(R.string.lblAccInitVal);
@@ -586,7 +583,6 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
         } else {
             iconColor = Color.LTGRAY;
         }
-
         return iconColor;
     }
 
@@ -615,49 +611,6 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
 
             // TODO remove multiplicator for real life usage
             if (acc < settings.getDistance()) {
-                // for testing
-                // Location initLoc = new Location("");
-                //
-                // initLoc.setLatitude(48.300992);
-                // initLoc.setLongitude(14.164031);
-
-
-                // center 48.300995, 14.164029
-                // N 48.301039, 14.164032
-                // S 48.300949, 14.164027
-                // W 48.300995, 14.163958
-                // E 48.300993, 14.164100
-
-                // NW 48.301039, 14.163959
-                // NE 48.301036, 14.164097
-                // SE 48.300950, 14.164097
-                // SW 48.300946, 14.163958
-
-                // inside:
-                // 48.301021, 14.164065 NE ok
-                // 48.301028, 14.164028 N ok
-                // 48.300958, 14.164027 S ok
-                // 48.300960, 14.163977 SW ok
-                //corner:
-                // 48.301033, 14.164087 ok
-                // 48.300954, 14.164090 ok
-                // 48.300954, 14.163971 ok
-                // 48.301031, 14.163970 ok
-
-                // outside:
-                // 48.301047, 14.164074 NNE
-                // 48.300980, 14.163950 WSW
-                // corner
-                // 48.301044, 14.164107 ok
-                // 48.300940, 14.164111 ok
-                // 48.300942, 14.163946 ok
-                // 48.301044, 14.163950 ok
-
-
-                // new pos
-                //pos.setLatitude(48.300980);
-                //pos.setLongitude(14.163950);
-
                 float[] distance = new float[2];
                 Location.distanceBetween(activePosLocation.getLatitude(), activePosLocation.getLongitude(), pos.getLatitude(), pos.getLongitude(), distance);
 
@@ -671,11 +624,11 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
                 int dim = settings.getDistance();
                 int dir = -2; // -1...inside; 0...N; 1...E; 2...S; 3...W
                 double coeff;
-                double diag = Math.sqrt(dim / 2 * dim / 2 + dim / 2 * dim / 2);
+                double diag = Math.sqrt(dim / 2.0 * dim / 2.0 + dim / 2.0 * dim / 2.0);
                 if (dist < dim / 2) {
                     dir = -1;
                 } else if (0 <= bear && bear < 45) {
-                    coeff = (diag - dim / 2) / 45;
+                    coeff = (diag - dim / 2.0) / 45;
                     if (dist > dim / 2 + (Math.abs(bear) % 45) * coeff) {
                         dir = 0;
                     }
@@ -684,21 +637,21 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
                         dir = 1;
                     }
                 } else if (90 <= bear && bear < 135) {
-                    coeff = (diag - dim / 2) / 45;
+                    coeff = (diag - dim / 2.0) / 45;
                     if (dist > dim / 2 + (Math.abs(bear) % 45) * coeff) {
                         dir = 1;
                     }
                 } else if (135 <= bear && bear < 180) {
-                    if (dist > diag - ((bear - 135) / 45) * ((diag - dim / 2))) {
+                    if (dist > diag - ((bear - 135) / 45) * ((diag - dim / 2.0))) {
                         dir = 2;
                     }
                 } else if (-180 <= bear && bear < -135) {
-                    if (dist > diag - ((bear * (-1) - 135) / 45) * ((diag - dim / 2))) {
+                    if (dist > diag - ((bear * (-1) - 135) / 45) * ((diag - dim / 2.0))) {
                         dir = 2;
                     }
                 } else if (-135 <= bear && bear < -90) {
-                    coeff = (diag - dim / 2) / 45;
-                    if (dist > dim / 2 + (Math.abs(bear) % 45) * coeff) {
+                    coeff = (diag - dim / 2.0) / 45;
+                    if (dist > dim / 2.0 + (Math.abs(bear) % 45) * coeff) {
                         dir = 3;
                     }
                 } else if (-90 <= bear && bear < -45) {
@@ -706,7 +659,7 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
                         dir = 3;
                     }
                 } else if (-45 <= bear && bear < 0) {
-                    coeff = (Math.sqrt(dim / 2 * dim / 2 + dim / 2 * dim / 2) - dim / 2) / 45;
+                    coeff = (Math.sqrt(dim / 2.0 * dim / 2.0 + dim / 2.0 * dim / 2.0) - dim / 2.0) / 45;
                     if (dist > dim / 2 + (Math.abs(bear) % 45) * coeff) {
                         dir = 0;
                     }
@@ -740,49 +693,39 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
 
                 if(dir >= 0 && dir <= 3)
                     saveGame();
-
-            } else
+            } else {
                 Log.d("MainActivityLogger", "accurracy too bad");
+            }
         }
 
         @Override
-        public void onStatusChanged(String provider, int status, Bundle extras) {
-        }
+        public void onStatusChanged(String provider, int status, Bundle extras) {}
 
         @Override
-        public void onProviderEnabled(String provider) {
-        }
+        public void onProviderEnabled(String provider) {}
 
         @Override
-        public void onProviderDisabled(String provider) {
-        }
+        public void onProviderDisabled(String provider) {}
 
     };
 
     private void updateIndicator(Button btnIndicator, float acc) {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
-            if (acc > settings.getDistance()/2)
+            if (acc > settings.getDistance()/2) {
                 btnIndicator.setBackgroundColor(getResources().getColor(android.R.color.holo_red_dark, this.getTheme()));
-            else if (acc > settings.getDistance()/3)
+            }else if (acc > settings.getDistance()/3) {
                 btnIndicator.setBackgroundColor(getResources().getColor(android.R.color.holo_orange_light, this.getTheme()));
-            else
+            }else {
                 btnIndicator.setBackgroundColor(getResources().getColor(android.R.color.holo_green_light, this.getTheme()));
+            }
         }
-
     }
 
     public boolean checkLocationPermission() {
-        if (ContextCompat.checkSelfPermission(this,
-                Manifest.permission.ACCESS_FINE_LOCATION)
-                != PackageManager.PERMISSION_GRANTED) {
-
+        if (ContextCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
             // Should we show an explanation?
-            if (ActivityCompat.shouldShowRequestPermissionRationale(this,
-                    Manifest.permission.ACCESS_FINE_LOCATION)) {
-
-                // Show an explanation to the user *asynchronously* -- don't block
-                // this thread waiting for the user's response! After the user
-                // sees the explanation, try again to request the permission.
+            if (ActivityCompat.shouldShowRequestPermissionRationale(this, Manifest.permission.ACCESS_FINE_LOCATION)) {
+                // Show an explanation to the user *asynchronously* -- don't block this thread waiting for the user's response! After the user sees the explanation, try again to request the permission.
                 new AlertDialog.Builder(this)
                         .setTitle(R.string.app_name)
                         .setMessage(R.string.app_name)
@@ -790,33 +733,19 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
                             @Override
                             public void onClick(DialogInterface dialogInterface, int i) {
                                 //Prompt the user once explanation has been shown
-                                ActivityCompat.requestPermissions(MainActivity.this,
-                                        new String[]{Manifest.permission.ACCESS_FINE_LOCATION},
-                                        MY_PERMISSIONS_REQUEST_LOCATION_FINE);
+                                ActivityCompat.requestPermissions(MainActivity.this, new String[]{Manifest.permission.ACCESS_FINE_LOCATION}, MY_PERMISSIONS_REQUEST_LOCATION_FINE);
                             }
-                        })
-                        .create()
-                        .show();
-
-
+                        }).create().show();
             } else {
                 // No explanation needed, we can request the permission.
-                ActivityCompat.requestPermissions(this,
-                        new String[]{Manifest.permission.ACCESS_FINE_LOCATION},
-                        MY_PERMISSIONS_REQUEST_LOCATION_FINE);
+                ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.ACCESS_FINE_LOCATION}, MY_PERMISSIONS_REQUEST_LOCATION_FINE);
             }
             return false;
         }
-        if (ContextCompat.checkSelfPermission(this,
-                Manifest.permission.ACCESS_COARSE_LOCATION)
-                != PackageManager.PERMISSION_GRANTED) {
+        if (ContextCompat.checkSelfPermission(this, Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
             // Should we show an explanation?
-            if (ActivityCompat.shouldShowRequestPermissionRationale(this,
-                    Manifest.permission.ACCESS_COARSE_LOCATION)) {
-
-                // Show an explanation to the user *asynchronously* -- don't block
-                // this thread waiting for the user's response! After the user
-                // sees the explanation, try again to request the permission.
+            if (ActivityCompat.shouldShowRequestPermissionRationale(this, Manifest.permission.ACCESS_COARSE_LOCATION)) {
+                // Show an explanation to the user *asynchronously* -- don't block this thread waiting for the user's response! After the user sees the explanation, try again to request the permission.
                 new AlertDialog.Builder(this)
                         .setTitle(R.string.app_name)
                         .setMessage(R.string.app_name)
@@ -824,20 +753,11 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
                             @Override
                             public void onClick(DialogInterface dialogInterface, int i) {
                                 //Prompt the user once explanation has been shown
-                                ActivityCompat.requestPermissions(MainActivity.this,
-                                        new String[]{Manifest.permission.ACCESS_COARSE_LOCATION},
-                                        MY_PERMISSIONS_REQUEST_LOCATION_COARSE);
+                                ActivityCompat.requestPermissions(MainActivity.this, new String[]{Manifest.permission.ACCESS_COARSE_LOCATION}, MY_PERMISSIONS_REQUEST_LOCATION_COARSE);
                             }
-                        })
-                        .create()
-                        .show();
-
-
-            } else {
-                // No explanation needed, we can request the permission.
-                ActivityCompat.requestPermissions(this,
-                        new String[]{Manifest.permission.ACCESS_FINE_LOCATION},
-                        MY_PERMISSIONS_REQUEST_LOCATION_COARSE);
+                        }).create().show();
+            } else { // No explanation needed, we can request the permission.
+                ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.ACCESS_FINE_LOCATION}, MY_PERMISSIONS_REQUEST_LOCATION_COARSE);
             }
             return false;
         } else {
@@ -850,44 +770,28 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
         switch (requestCode) {
             case MY_PERMISSIONS_REQUEST_LOCATION_FINE: {
                 // If request is cancelled, the result arrays are empty.
-                if (grantResults.length > 0
-                        && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
-
-                    // permission was granted, yay! Do the
-                    // location-related task you need to do.
-                    if (ContextCompat.checkSelfPermission(this,
-                            Manifest.permission.ACCESS_FINE_LOCATION)
-                            == PackageManager.PERMISSION_GRANTED) {
-
+                if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+                    // permission was granted, yay! Do the location-related task you need to do.
+                    if (ContextCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) == PackageManager.PERMISSION_GRANTED) {
                         //Request location updates:
                         mLocationManager_gps.requestLocationUpdates(LocationManager.GPS_PROVIDER, 400, 1, mLocationListener);
                     }
-
                 } else {
-
-                    // permission denied, boo! Disable the
-                    // functionality that depends on this permission.
+                    // permission denied, boo! Disable the functionality that depends on this permission.
                     Toast.makeText(getBaseContext(), "Location permission denied. \nNeed location permissions for the game.", Toast.LENGTH_SHORT).show();
                 }
                 return;
             }
             case MY_PERMISSIONS_REQUEST_LOCATION_COARSE: {
                 // If request is cancelled, the result arrays are empty.
-                if (grantResults.length > 0
-                        && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
-
+                if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
                     // permission was granted, yay! Do the
                     // location-related task you need to do.
-                    if (ContextCompat.checkSelfPermission(this,
-                            Manifest.permission.ACCESS_COARSE_LOCATION)
-                            == PackageManager.PERMISSION_GRANTED) {
-
+                    if (ContextCompat.checkSelfPermission(this, Manifest.permission.ACCESS_COARSE_LOCATION) == PackageManager.PERMISSION_GRANTED) {
                         //Request location updates:
                         mLocationManager_net.requestLocationUpdates(LocationManager.NETWORK_PROVIDER, 400, 1, mLocationListener);
                     }
-
                 } else {
-
                     // permission denied, boo! Disable the
                     // functionality that depends on this permission.
                     Toast.makeText(getBaseContext(), "Location permission denied. \nNeed location permissions for the game.", Toast.LENGTH_SHORT).show();
@@ -899,7 +803,6 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
 
     @Override
     public void onSensorChanged(SensorEvent event) {
-
         // get the angle around the z-axis rotated
         float degree = Math.round(event.values[0]);
 
@@ -920,13 +823,10 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
         // Start the animation
         compassImageView.startAnimation(ra);
         currentDegree = -degree;
-
     }
 
     @Override
-    public void onAccuracyChanged(Sensor sensor, int accuracy) {
-
-    }
+    public void onAccuracyChanged(Sensor sensor, int accuracy) {}
 
     private void saveGame(){
         try {

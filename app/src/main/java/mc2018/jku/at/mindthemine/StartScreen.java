@@ -52,7 +52,9 @@ public class StartScreen extends AppCompatActivity {
         compMp.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Toast.makeText(getBaseContext(), "To be implemented!", Toast.LENGTH_SHORT).show();
+                Intent toMultiPlayerComp = new Intent(getBaseContext(), MultiplayerCompetitive.class);
+                startActivity(toMultiPlayerComp);
+                //Toast.makeText(getBaseContext(), "To be implemented!", Toast.LENGTH_SHORT).show();
             }
         });
 
