@@ -1,4 +1,4 @@
-<resources>
+<resources xmlns:tools="http://schemas.android.com/tools">
     <string name="app_name">MindTheMine</string>
     <string name="restart">RESTART</string>
     <string name="settings">Settings</string>
@@ -21,4 +21,8 @@
     <string name="distance">Distance in m:</string>
     <string name="space" />
     <string name="gestures">Gestures</string>
+    <string name="title_activity_2">Activity2</string>
+    <string name="looking_for_a_game" tools:ignore="TypographyEllipsis">Looking for a game...</string>
+    <string name="match_id">Match-ID:</string>
+    <string name="enter">Enter</string>
 </resources>

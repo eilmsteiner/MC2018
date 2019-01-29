@@ -5,7 +5,6 @@ import android.os.Bundle;
 import android.util.Log;
 import android.widget.TextView;
 
-import com.android.volley.AuthFailureError;
 import com.android.volley.Request;
 import com.android.volley.RequestQueue;
 import com.android.volley.Response;
@@ -79,7 +78,7 @@ public class MultiplayerCompetitive extends AppCompatActivity {
     void communicateJSON(){
         // Instantiate the RequestQueue.
         RequestQueue queue = Volley.newRequestQueue(this);
-        String url ="http://www.google.com";
+        String url ="http://http://master.picup.cc/mtm/index.php?mtmrequesthandler/activeGame";
 
         StringRequest request = new StringRequest(Request.Method.POST, url, new Response.Listener<String>() {
                 @Override
@@ -91,8 +90,9 @@ public class MultiplayerCompetitive extends AppCompatActivity {
             new Response.ErrorListener() {
                 @Override
                 public void onErrorResponse(VolleyError error) {
-                    mTextView.setText("That didn't work!");
-                    mTextView.setText(">"+s.getUid()+"< what");
+                    //mTextView.setText("That didn't work!");
+                    //mTextView.setText(">"+s.getUid()+"< what");
+                    mTextView.setText(error.getMessage());
                 }
             }){
                 @Override

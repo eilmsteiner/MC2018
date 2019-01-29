@@ -170,16 +170,36 @@ class Board implements Serializable {
     }
 
     private void setRandomCellActive() {
+        Cell[] blanks = getBlankCells(true);
+
+        Cell c = blanks[(int) (Math.random() * blanks.length)];
+        c.setActive(true);
+    }
+
+    private Cell[] getBlankCells(boolean inclusiveActive) {
         ArrayList<Cell> blanks = new ArrayList<>();
         for (Cell[] row : board) {
             for (Cell c : row) {
                 if (c.isBlank())
-                    blanks.add(c);
+                    if(inclusiveActive) {
+                        blanks.add(c);
+                    } else {
+                        if (!c.isActive()) {
+                            blanks.add(c);
+                        }
+                    }
             }
         }
 
-        Cell c = blanks.get((int) (Math.random() * blanks.size()));
-        c.setActive(true);
+        return blanks.toArray(new Cell[0]);
+    }
+
+    int getNumberOfBlankCells(){
+        return getBlankCells(true).length;
+    }
+
+    Cell[] getNonActiveBlankCells(){
+        return getBlankCells(false);
     }
 
     void setActive(int rowCoord, int colCoord) {

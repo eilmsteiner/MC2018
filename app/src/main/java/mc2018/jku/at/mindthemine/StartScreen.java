@@ -1,3 +1,4 @@
+
 package mc2018.jku.at.mindthemine;
 
 import android.Manifest;
@@ -52,8 +53,12 @@ public class StartScreen extends AppCompatActivity {
         compMp.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Intent toMultiPlayerComp = new Intent(getBaseContext(), MultiplayerCompetitive.class);
-                startActivity(toMultiPlayerComp);
+                /*Intent toMultiPlayerComp = new Intent(getBaseContext(), MultiplayerCompetitive.class);
+                startActivity(toMultiPlayerComp);*/
+
+                Intent i = new Intent(getBaseContext(), Lobby.class);
+                startActivityForResult(i, 1);
+
                 //Toast.makeText(getBaseContext(), "To be implemented!", Toast.LENGTH_SHORT).show();
             }
         });
@@ -139,6 +144,15 @@ public class StartScreen extends AppCompatActivity {
             return false;
         } else {
             return true;
+        }
+    }
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        //super.onActivityResult(requestCode, resultCode, data);
+        if(requestCode == 1){ // lobby
+            int gameId = data.getIntExtra("gameId", -1);
+            Toast.makeText(getBaseContext(), "gameId: "+gameId, Toast.LENGTH_SHORT).show();
         }
     }
 }

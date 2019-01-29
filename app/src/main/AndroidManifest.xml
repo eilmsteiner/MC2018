@@ -5,7 +5,7 @@
     <uses-permission android:name="android.permission.VIBRATE" />
     <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
     <uses-permission android:name="android.permission.INTERNET" />
-    <uses-permission android:name="android.permission.ACCESS_WIFI_STATE"/>
+    <uses-permission android:name="android.permission.ACCESS_WIFI_STATE" />
 
     <uses-feature
         android:name="android.hardware.sensor.accelerometer"
@@ -18,6 +18,10 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
+        <activity
+            android:name=".Lobby"
+            android:configChanges="orientation"
+            android:screenOrientation="portrait" />
         <activity android:name=".MultiplayerCompetitive" />
         <activity
             android:name=".MainActivity"
