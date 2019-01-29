@@ -12,7 +12,25 @@ import java.io.OutputStreamWriter;
 
 import static android.content.Context.MODE_PRIVATE;
 
+
 class Settings {
+
+    public static final int DIM_easy = 6;
+    public static final int MARGIN_easy = 6;
+    public static final double PROBABILITY_easy = 0.95;
+
+    public static final int DIM_medium = 8;
+    public static final int MARGIN_medium = 6;
+    public static final double PROBABILITY_medium = 0.8;
+
+    public static final int DIM_hard = 10;
+    public static final int MARGIN_hard = 6;
+    public static final double PROBABILITY_hard = 0.5;
+
+    public static final int DIM_impossible = 20;
+    public static final int MARGIN_impossible = 2;
+    public static final double PROBABILITY_impossible = .0;
+
     private final static String FILENAME = "settings";
 
     private Context context;
@@ -152,5 +170,17 @@ class Settings {
 
     private void show(String text){
         Toast.makeText(context, text, Toast.LENGTH_SHORT).show();
+    }
+
+    public int getDimOfDifficulty(){
+        if(difficulty.equals("Easy"))
+            return DIM_easy;
+        if(difficulty.equals("Medium"))
+            return DIM_medium;
+        if(difficulty.equals("Hard"))
+            return DIM_hard;
+        if(difficulty.equals("Impossible"))
+            return DIM_impossible;
+        return DIM_easy;
     }
 }

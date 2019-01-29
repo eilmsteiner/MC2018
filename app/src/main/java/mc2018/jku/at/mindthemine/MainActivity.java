@@ -51,9 +51,11 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
     //TODO vl können wir die Klasse noch ein bisschen zerteilen 900 Zeilen sind schon sehr viel :D
     //TODO z.B. SensorEventListener, LocationListner , Board initialization auslagern, ...
     // test
-    private int DIM = 6;
-    private double PROBABILITY = 6;
-    private int MARGIN = 6; // always set one higher than needed
+
+    private int DIM = Settings.DIM_easy;
+    private double PROBABILITY = Settings.PROBABILITY_easy;
+    private int MARGIN = Settings.MARGIN_easy; // always set one higher than needed
+
     private final static String FILENAME = "singleplayer";
 
     Settings settings;
@@ -155,24 +157,24 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
 
         switch (settings.getDifficulty()) {
             case "Easy":
-                DIM = 6;
-                MARGIN = 6;
-                PROBABILITY = 0.95;
+                DIM = Settings.DIM_easy;
+                MARGIN = Settings.MARGIN_easy;
+                PROBABILITY = Settings.PROBABILITY_easy;
                 break;
             case "Medium":
-                DIM = 8;
-                MARGIN = 6;
-                PROBABILITY = 0.8;
+                DIM = Settings.DIM_medium;
+                MARGIN = Settings.MARGIN_medium;
+                PROBABILITY = Settings.PROBABILITY_medium;
                 break;
             case "Hard":
-                PROBABILITY = 0.5;
-                MARGIN = 6;
-                DIM = 10;
+                PROBABILITY = Settings.PROBABILITY_hard;
+                MARGIN = Settings.MARGIN_hard;
+                DIM = Settings.DIM_hard;
                 break;
             case "Impossible":
-                PROBABILITY = 0.0;
-                MARGIN = 2;
-                DIM = 20;
+                PROBABILITY = Settings.PROBABILITY_impossible;
+                MARGIN = Settings.MARGIN_impossible;
+                DIM = Settings.DIM_impossible;
                 break;
             default:
                 DIM = 2;
@@ -849,6 +851,8 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
             b = (Board) in.readObject();
             in.close();
             fin.close();
+            if(b.getRowCount() != settings.getDimOfDifficulty())
+                return null;
         } catch (IOException i) {
             // what to do?
             Log.d("MainActivitySaveLogger", "File could not be read.");
