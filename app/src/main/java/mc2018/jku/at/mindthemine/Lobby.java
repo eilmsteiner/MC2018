@@ -76,14 +76,19 @@ public class Lobby extends AppCompatActivity {
         StringRequest request = new StringRequest(Request.Method.POST, url, new Response.Listener<String>() {
                 @Override
                 public void onResponse(String response) {
+                    Log.d(TAG, response);
                     if(response.startsWith("NONE FOUND")){ // no game found -> start a new one and wait
                         titleTextView.setText("No active game found.\nLet's start one up.");
 
                         checkForWaitingRoom();
                     }else{
                         titleTextView.setText("Game found!");
-                        int gameId = Integer.parseInt(response);
-                        nextStep(gameId);
+                        try {
+                            int gameId = Integer.parseInt(response);
+                            nextStep(gameId);
+                        }catch(Exception e){
+                            titleTextView.setText("An error occurred.\nPlease try again later!\n(Error code: E001a)");
+                        }
                     }
                 }
             },
@@ -98,7 +103,7 @@ public class Lobby extends AppCompatActivity {
                     } catch (NullPointerException e) {
                         e.printStackTrace();
                     }
-                    titleTextView.setText("An error occurred.\nPlease try again later!\n(Error code: E001)");
+                    titleTextView.setText("An error occurred.\nPlease try again later!\n(Error code: E001b)");
                 }
             }
         ){
@@ -107,6 +112,7 @@ public class Lobby extends AppCompatActivity {
                 Map<String, String> map = new HashMap<>();
 
                 map.put("pId", s.getUid());
+                map.put("type", "comp");
 
                 return map;
             }
@@ -278,6 +284,7 @@ public class Lobby extends AppCompatActivity {
                                 Map<String, String> map = new HashMap<>();
 
                                 map.put("pId", s.getUid());
+                                map.put("type", "comp");
 
                                 return map;
                             }
