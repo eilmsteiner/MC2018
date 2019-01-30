@@ -55,7 +55,7 @@ import java.util.Timer;
 import java.util.TimerTask;
 
 public class MultiplayerCompetitive extends AppCompatActivity implements SensorEventListener, Game {
-    private final String TAG = "MultiplayerCompetitive";
+    private final String TAG = "MPCompLog";
 
     private int DIM = Settings.DIM_easy;
     private double PROBABILITY = Settings.PROBABILITY_easy;
@@ -812,6 +812,7 @@ public class MultiplayerCompetitive extends AppCompatActivity implements SensorE
         StringRequest request = new StringRequest(Request.Method.POST, url, new Response.Listener<String>() {
             @Override
             public void onResponse(String response) {
+                Log.e(TAG, response);
                 // response has board
                 if(!response.equals("DONE")){
                     Toast.makeText(getBaseContext(), "Could not save board.", Toast.LENGTH_SHORT).show();
@@ -862,6 +863,11 @@ public class MultiplayerCompetitive extends AppCompatActivity implements SensorE
         StringRequest request = new StringRequest(Request.Method.POST, url, new Response.Listener<String>() {
             @Override
             public void onResponse(String response) {
+                if(response.equals("Not an active game.")){
+                    Toast.makeText(getApplicationContext(), "The game has ended.", Toast.LENGTH_SHORT).show();
+                    board.setDone();
+                    return;
+                }
                 // response has board
                 Gson gson = new Gson();
                 board = gson.fromJson(response, Board.class);
@@ -992,6 +998,11 @@ public class MultiplayerCompetitive extends AppCompatActivity implements SensorE
         StringRequest request = new StringRequest(Request.Method.POST, url, new Response.Listener<String>() {
             @Override
             public void onResponse(String response) {
+                if(response.equals("Not an active game.")){
+                    Toast.makeText(getApplicationContext(), "The game has ended.", Toast.LENGTH_SHORT).show();
+                    board.setDone();
+                    return;
+                }
                 // response has board
                 Gson gson = new Gson();
                 board = gson.fromJson(response, Board.class);
@@ -1123,6 +1134,11 @@ public class MultiplayerCompetitive extends AppCompatActivity implements SensorE
         StringRequest request = new StringRequest(Request.Method.POST, url, new Response.Listener<String>() {
             @Override
             public void onResponse(String response) {
+                if(response.equals("Not an active game.")){
+                    Toast.makeText(getApplicationContext(), "The game has ended.", Toast.LENGTH_SHORT).show();
+                    board.setDone();
+                    return;
+                }
                 // response has board
                 Gson gson = new Gson();
                 board = gson.fromJson(response, Board.class);
@@ -1254,6 +1270,11 @@ public class MultiplayerCompetitive extends AppCompatActivity implements SensorE
         StringRequest request = new StringRequest(Request.Method.POST, url, new Response.Listener<String>() {
             @Override
             public void onResponse(String response) {
+                if(response.equals("Not an active game.")){
+                    Toast.makeText(getApplicationContext(), "The game has ended.", Toast.LENGTH_SHORT).show();
+                    board.setDone();
+                    return;
+                }
                 // response has board
                 Gson gson = new Gson();
                 board = gson.fromJson(response, Board.class);
@@ -1387,7 +1408,8 @@ public class MultiplayerCompetitive extends AppCompatActivity implements SensorE
             public void onResponse(String response) {
                 if(response.equals("done")){
                     board.setDone();
-                    Toast.makeText(getApplicationContext(), "You conceded the game!", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(getApplicationContext(), "The game is now over!", Toast.LENGTH_SHORT).show();
+                    finish();
                 }else{
                     Log.e(TAG, "conceding: "+response);
                     Toast.makeText(getApplicationContext(), "Conceding failed!", Toast.LENGTH_SHORT).show();

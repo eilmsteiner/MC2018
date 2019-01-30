@@ -157,7 +157,7 @@ public class StartScreen extends AppCompatActivity {
                 toMultiPlayerComp.putExtra("gameId", gameId);
                 startActivity(toMultiPlayerComp);
             } else {
-                Toast.makeText(getBaseContext(), "gameId: " + gameId, Toast.LENGTH_SHORT).show();
+                //Toast.makeText(getBaseContext(), "gameId: " + gameId, Toast.LENGTH_SHORT).show();
             }
         }
     }
