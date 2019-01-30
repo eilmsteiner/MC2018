@@ -12,11 +12,11 @@ public class GestureRecognition implements SensorEventListener {
     private float actualYGravity;
     private Queue<Float> xWindow, yWindow;
     private long timeFlag = 0L, timeRight = 0L, timeLeft = 0L, lock = 0L;
-    private final MainActivity mainActivity;
+    private final Game mainActivity;
     private static final long SECOND = 1000000000L;
 
-    GestureRecognition(MainActivity mainActivity) {
-        this.mainActivity = mainActivity;
+    GestureRecognition(Game activity) {
+        this.mainActivity = activity;
         xWindow = new LinkedList<>();
         yWindow = new LinkedList<>();
         for (int i = 0; i < 5; i++) {

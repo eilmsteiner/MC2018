@@ -57,7 +57,7 @@ public class Lobby extends AppCompatActivity {
             public void onClick(View v) {
                 titleTextView.setText("Creating board...");
                 do {
-                    b = new Board(8, 8);
+                    b = new Board(Settings.DIM_medium, Settings.DIM_medium, Settings.PROBABILITY_medium);
                     titleTextView.setText(titleTextView.getText()+".");
                 }while(b.getNumberOfBlankCells() < 2);
 
@@ -76,7 +76,6 @@ public class Lobby extends AppCompatActivity {
         StringRequest request = new StringRequest(Request.Method.POST, url, new Response.Listener<String>() {
                 @Override
                 public void onResponse(String response) {
-                    Log.d(TAG, response);
                     if(response.startsWith("NONE FOUND")){ // no game found -> start a new one and wait
                         titleTextView.setText("No active game found.\nLet's start one up.");
 

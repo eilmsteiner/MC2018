@@ -11,7 +11,6 @@ import android.support.v4.app.ActivityCompat;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.view.View;
-import android.widget.Button;
 import android.widget.ImageButton;
 import android.widget.Toast;
 
@@ -36,7 +35,7 @@ public class StartScreen extends AppCompatActivity {
         sp.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Intent toSinglePlayer = new Intent(getBaseContext(), MainActivity.class);
+                Intent toSinglePlayer = new Intent(getBaseContext(), SinglePlayer.class);
                 startActivity(toSinglePlayer);
             }
         });
@@ -152,7 +151,14 @@ public class StartScreen extends AppCompatActivity {
         //super.onActivityResult(requestCode, resultCode, data);
         if(requestCode == 1){ // lobby
             int gameId = data.getIntExtra("gameId", -1);
-            Toast.makeText(getBaseContext(), "gameId: "+gameId, Toast.LENGTH_SHORT).show();
+
+            if(gameId > -1){
+                Intent toMultiPlayerComp = new Intent(getBaseContext(), MultiplayerCompetitive.class);
+                toMultiPlayerComp.putExtra("gameId", gameId);
+                startActivity(toMultiPlayerComp);
+            } else {
+                Toast.makeText(getBaseContext(), "gameId: " + gameId, Toast.LENGTH_SHORT).show();
+            }
         }
     }
 }

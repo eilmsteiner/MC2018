@@ -44,10 +44,9 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
-import java.io.OutputStreamWriter;
 import java.util.Locale;
 
-public class MainActivity extends AppCompatActivity implements SensorEventListener {
+public class SinglePlayer extends AppCompatActivity implements SensorEventListener, Game {
     //TODO vl können wir die Klasse noch ein bisschen zerteilen 900 Zeilen sind schon sehr viel :D
     //TODO z.B. SensorEventListener, LocationListner , Board initialization auslagern, ...
     // test
@@ -100,6 +99,8 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+
+        getWindow().addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON);
 
         //Remove title bar
         this.requestWindowFeature(Window.FEATURE_NO_TITLE);
@@ -735,7 +736,7 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
                             @Override
                             public void onClick(DialogInterface dialogInterface, int i) {
                                 //Prompt the user once explanation has been shown
-                                ActivityCompat.requestPermissions(MainActivity.this, new String[]{Manifest.permission.ACCESS_FINE_LOCATION}, MY_PERMISSIONS_REQUEST_LOCATION_FINE);
+                                ActivityCompat.requestPermissions(SinglePlayer.this, new String[]{Manifest.permission.ACCESS_FINE_LOCATION}, MY_PERMISSIONS_REQUEST_LOCATION_FINE);
                             }
                         }).create().show();
             } else {
@@ -755,7 +756,7 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
                             @Override
                             public void onClick(DialogInterface dialogInterface, int i) {
                                 //Prompt the user once explanation has been shown
-                                ActivityCompat.requestPermissions(MainActivity.this, new String[]{Manifest.permission.ACCESS_COARSE_LOCATION}, MY_PERMISSIONS_REQUEST_LOCATION_COARSE);
+                                ActivityCompat.requestPermissions(SinglePlayer.this, new String[]{Manifest.permission.ACCESS_COARSE_LOCATION}, MY_PERMISSIONS_REQUEST_LOCATION_COARSE);
                             }
                         }).create().show();
             } else { // No explanation needed, we can request the permission.

@@ -6,7 +6,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical"
-    tools:context=".MainActivity">
+    tools:context=".SinglePlayer">
 
     <android.support.constraint.ConstraintLayout
         android:layout_width="match_parent"
@@ -16,7 +16,10 @@
             android:id="@+id/textView4"
             android:layout_width="wrap_content"
             android:layout_height="8dp"
-            android:text="@string/space" />
+            android:text="@string/space"
+            app:layout_constraintLeft_toLeftOf="parent"
+            app:layout_constraintLeft_toRightOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
     </android.support.constraint.ConstraintLayout>
 
     <TableLayout
@@ -193,6 +196,7 @@
             android:layout_marginTop="4dp"
             android:layout_marginEnd="8dp"
             android:layout_marginBottom="4dp"
+            android:contentDescription="Compass"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"

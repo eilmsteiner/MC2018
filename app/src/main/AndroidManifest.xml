@@ -24,7 +24,7 @@
             android:screenOrientation="portrait" />
         <activity android:name=".MultiplayerCompetitive" />
         <activity
-            android:name=".MainActivity"
+            android:name=".SinglePlayer"
             android:configChanges="orientation|keyboardHidden"
             android:screenOrientation="portrait" />
         <activity

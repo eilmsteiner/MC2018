@@ -1,7 +1,6 @@
 package mc2018.jku.at.mindthemine;
 
 import com.google.gson.Gson;
-import com.google.gson.GsonBuilder;
 
 import java.io.Serializable;
 import java.util.ArrayList;
@@ -18,7 +17,6 @@ class Board implements Serializable {
     Board(int rows, int cols){
         this(rows, cols, 0.95);
     }
-
 
     // ratio probability of containing a mine (is 1-alpha like)
     Board(int rows, int cols, double ratio) {
@@ -156,6 +154,8 @@ class Board implements Serializable {
     boolean isNotRunning() {
         return !this.isRunning;
     }
+
+    void setDone() { this.isRunning = false; }
 
     boolean isWon() {
         return this.isWon;
